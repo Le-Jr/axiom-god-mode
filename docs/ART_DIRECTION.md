@@ -17,7 +17,8 @@ Keywords: luminous, geometric, cosmic, silent, melancholic, overwhelming.
 | `hostile-ember` | `#FF5A2E` | **enemy bullets** (core is lighter `#FFD2A8`) |
 | `hostile-blood` | `#E0203A` | lasers, telegraph fills, damage flashes |
 | `warning-amber` | `#FFB020` | telegraph outlines, artillery markers |
-| `axiom-gold` | `#FFE7A3` | Axiom rarity, level-up |
+| `axiom-gold` | `#FFE7A3` | Axiom rarity, level-up, "new record" |
+| `rare-blue` | `#6FA8FF` | Rare rarity frame |
 
 Faction tints (enemy body accents, never bullets): police `#3D6BFF`, swat `#2B3340`, army `#5B6B3A`, armor `#6E6A55`, air `#8A97A8`, society `#C8A040`, aliens `#4DFFB0`, heroes per member, demiurge `#9B6BFF`/white, cosmic shifting hue.
 
@@ -53,6 +54,7 @@ Order: Bloom → ChromaticAberration → Glitch/Noise (conditional) → Vignette
 
 ## UI / HUD
 - Use the `frontend-design` skill. HUD elements sit at screen edges and never cover the central 60%.
+- XP: a thin violet line along the top edge. XP orbs are violet octahedra, because XP is what erasure leaves behind and they must never read as warm bullets.
 - HP bar labeled **Form** (bottom-left, cyan → ember at low HP), energy bar (beside it), XP bar (thin line at the top), timer + tier + Cycle (top-center), level (top-left).
 - Upgrade picker: 3 cards, rarity color frame, icon, name, effect text, stacks owned. Keys 1/2/3.
 - **Typefaces** (both are SIL OFL, loaded with `next/font/google`):

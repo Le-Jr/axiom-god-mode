@@ -1,8 +1,10 @@
 'use client';
 import dynamic from 'next/dynamic';
 import { DebugOverlay } from '@/ui/DebugOverlay';
+import { GameOver } from '@/ui/GameOver';
 import { Hud } from '@/ui/Hud';
 import { PauseOverlay } from '@/ui/PauseOverlay';
+import { UpgradePicker } from '@/ui/UpgradePicker';
 
 // WebGL must never render on the server (CLAUDE.md rule 5). `ssr: false` only works in Client Components.
 const GameCanvas = dynamic(() => import('@/game/GameCanvas'), {
@@ -20,6 +22,8 @@ export function PlayClient() {
       <GameCanvas />
       <Hud />
       <PauseOverlay />
+      <UpgradePicker />
+      <GameOver />
       <DebugOverlay />
     </main>
   );

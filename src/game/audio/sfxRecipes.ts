@@ -146,6 +146,56 @@ export const explosionSmall: SfxRecipe = (ac, out, t, pitch) => {
   return 0.5;
 };
 
+/** Generic enemy weapon tick: short filtered noise click (throttled by the listener). */
+export const fireTick: SfxRecipe = (ac, out, t, pitch) => {
+  const bp = ac.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.value = 1400 * pitch;
+  bp.Q.value = 2;
+  bp.connect(envGain(ac, out, t, 0.18, 0.002, 0.06));
+  noise(ac, t, 0.08).connect(bp);
+  return 0.09;
+};
+
+/** Player hit: low distorted thud. */
+export const impactPlayer: SfxRecipe = (ac, out, t, pitch) => {
+  const osc = ac.createOscillator();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(160 * pitch, t);
+  osc.frequency.exponentialRampToValueAtTime(60 * pitch, t + 0.12);
+  osc.connect(envGain(ac, out, t, 0.35, 0.003, 0.14));
+  osc.start(t);
+  osc.stop(t + 0.16);
+  return 0.16;
+};
+
+/** Level-up stinger: rising open fifth with a shimmer. */
+export const levelUpStinger: SfxRecipe = (ac, out, t, pitch) => {
+  const notes = [261.63, 392, 523.25, 783.99];
+  for (let i = 0; i < notes.length; i++) {
+    const s = t + i * 0.07;
+    const osc = ac.createOscillator();
+    osc.type = i % 2 === 0 ? 'triangle' : 'sine';
+    osc.frequency.value = notes[i] * pitch;
+    osc.connect(envGain(ac, out, s, 0.22, 0.01, 0.9));
+    osc.start(s);
+    osc.stop(s + 1);
+  }
+  return 1.25;
+};
+
+/** UI select blip. */
+export const uiSelect: SfxRecipe = (ac, out, t, pitch) => {
+  const osc = ac.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(880 * pitch, t);
+  osc.frequency.exponentialRampToValueAtTime(1320 * pitch, t + 0.05);
+  osc.connect(envGain(ac, out, t, 0.2, 0.003, 0.08));
+  osc.start(t);
+  osc.stop(t + 0.1);
+  return 0.1;
+};
+
 /** Continuous aura hum: detuned sines + soft triangle, slow tremolo. */
 export const auraHum: LoopRecipe = (ac, out) => {
   const base = 55;

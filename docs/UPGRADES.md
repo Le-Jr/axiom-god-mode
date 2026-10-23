@@ -1,6 +1,6 @@
 # Upgrades (buffs)
 
-The source of truth is `src/game/upgrades/defs/*.ts`. Add buffs with the `upgrade-authoring` skill. Numbers are initial values and live in the buff definition or `config/upgrades.ts`.
+The source of truth is `src/game/upgrades/defs/index.ts`. Add buffs with the `upgrade-authoring` skill. Numbers are initial values and live in the buff definition or `config.upgrades` (`config/combat.ts`).
 
 ## Rarity
 | Rarity | Base weight | Color token | Notes |
@@ -47,7 +47,7 @@ Every buff declares `maxStacks`. Stats are recomputed from the owned buff list (
 | `move_speed` | Weightless | Common | multiplicative | move speed +8% | 5 |
 | `axiom_erasure` | Axiom: Nullify | Axiom | unique | erasure threshold −40%; erased enemies erase their in-flight bullets | 1 |
 
-**Phase 3 starter set (~8):** `aura_radius`, `aura_damage`, `beam_energy`, `beam_recharge`, `beam_pierce`, `max_hp`, `satellites`, `move_speed`.
+**Implemented (Phase 3):** `aura_radius`, `aura_damage`, `beam_energy`, `beam_recharge`, `beam_pierce`, `max_hp`, `satellites`, `move_speed` (all in `upgrades/defs/index.ts`). The rerolls and pity timer are in place, and synergies are not yet.
 
 ## Synergies
 A synergy is a passive bonus that activates automatically when every listed buff is owned at or above the required level. It is declared in `upgrades/synergies.ts` and shown in the picker as "Synergy ready".
@@ -80,4 +80,4 @@ export default defineUpgrade({
   // optional: runtime behavior (spawns satellites, etc.) via a system that reads `owned`
 });
 ```
-Then register it in `upgrades/defs/index.ts`, add a row here, and add an icon (`public/assets/textures/upgrades/<id>.png`, or a placeholder glyph).
+**Actual signature (Phase 3):** `apply(stats, stacks, config)`, with defs collected in the `UPGRADES` array of `upgrades/defs/index.ts`. Behavior buffs read `ctx.stats` in their system (e.g. `satelliteSystem`). Then add a row here, and add an icon (`public/assets/textures/upgrades/<id>.png`, or a placeholder glyph).

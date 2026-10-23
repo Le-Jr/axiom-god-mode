@@ -24,6 +24,8 @@ HP values are in player-damage units. The base beam erases around 300 HP/s, and 
 - Mini-bosses (SWAT, army) teach the boss format early. They have one or two phases and no music change.
 
 ## Pattern vocabulary
+**Implemented (Phase 3):** `aimed` (a stream of `count` along the aim), `spread`, `ring`, `spiral`. Each supports `bursts`/`burstGap` and Cycle `complexity` (count, arms and speed per Cycle, clamped by `maxCount`). The rest are pending.
+
 Emitter kinds (implemented in `systems/patterns/`; see the `bullet-pattern` skill): `aimed`, `spread`, `ring`, `spiral`, `homing`, `laser`, `artillery`, `airstrike`, `wave` (sine bullets), `burst` (delayed split).
 
 ## Tiers
@@ -33,10 +35,12 @@ Ground-level response. Readable, slow, teaches dodging.
 | Unit | HP | Speed | Patterns |
 |---|---|---|---|
 | Patrol Officer | 40–60 | 4–5 | `aimed` single, slow |
-| Patrol Car | 150 (prop-like, explodes) | 7 | rams; on death `ring` of 6 |
+| Patrol Car | 150 (prop-like, explodes) | 7 | rams (contact 400/s); when *killed* (not erased) `ring` of 6 |
 | Riot Line | 120 | 3 | `spread` 3 at 30° |
 
 ### 2. SWAT (`swat`)
+> **Phase 3 simplifications** (`factions/swat.ts`): Marksman fires a fast needle with no laser telegraph, the Shield Unit has no frontal block, and the Armored Van turret spirals and fires a death ring instead of deploying Breachers. The Breach Captain mini-boss is not implemented yet.
+
 | Unit | HP | Speed | Patterns |
 |---|---|---|---|
 | Breacher | 150 | 5 | `spread` 5 burst ×3 |
@@ -120,7 +124,7 @@ Beings beyond geometry. Patterns use the full vocabulary at maximum complexity.
 
 ## Cycles
 When the Cosmic Entity is defeated, `cycle += 1` and the ladder restarts at tier 1 with:
-- multipliers from `config/cycle.ts` (see [GDD §8](GDD.md#8-cycle-scaling)): `hpMult`, `dmgMult`, `densityMult` (capped by the perf budget) and `patternComplexity`
+- multipliers from `config.cycle` (`config/combat.ts`; see [GDD §8](GDD.md#8-cycle-scaling)): `hpMult`, `dmgMult`, `densityMult` (capped by the perf budget) and `patternComplexity`
 - **remixes**: each tier slot draws 1 primary faction plus `min(c, 2)` guest factions from *any* tier (seeded RNG). Example: Cycle 1, slot 2 = SWAT + Drifters.
 - **pattern complexity**: emitters add `+c` arms, bullets or speed variants up to the per-emitter caps.
 - shortened unlock times: `unlockTime * cycle.timeCompression ^ c` (start 0.85)

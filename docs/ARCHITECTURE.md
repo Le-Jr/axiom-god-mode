@@ -69,9 +69,24 @@ export interface System {
 **Projectiles are not ECS entities.** `entities/projectiles/ProjectilePool.ts` is SoA (`Float32Array` for x, z, vx, vz, radius, damage, life, age, param0..3 and `Uint8Array` for kind and flags) with a free list. Capacity comes from `config/performance.ts` (default 4096). Fragments and particles follow the same pattern.
 
 ## 5. Collision (`systems/collision`)
-- Uniform **spatial hash grid** on XZ. Cell size is around 2× the typical enemy radius (configurable). The grid is cleared and rebuilt each tick from flat `Int32Array` buckets: a head and next linked list, no Maps.
-- Shapes: circles (bullets, enemies, player, props) and **capsules/rays** (beam, lasers), with a segment–circle test that walks the grid cells along the segment (DDA).
-- Hits are written to a preallocated hit buffer, which `damage` consumes.
+- `core/SpatialHash.ts`: a uniform **hashed grid** on XZ (`config.enemies.gridCellSize`, power-of-two bucket table). Items go in the cell of their center, and queries scan cells overlapping `radius + maxItemRadius`. The structure is flat `Int32Array` head/next lists plus a per-item query stamp (dedupes hash aliasing), with no Maps. `gridSystem` rebuilds it first in the `player` phase from every non-erasing `Target`.
+- **Who uses what:**
+  - aura → grid circle query
+  - satellites → grid query per atom, plus a bullet scan
+  - enemy separation (`ai`) → grid, one tick stale
+  - enemy contact vs player → grid query at the player
+  - **enemy bullets vs player** → linear pass over the bullet pool. With one player, one circle test per bullet is optimal, so the grid is reserved for many-vs-many.
+  - **beam** → `rayCircle` over the Target query (≤ 300). Hits are sorted for pierce. A grid DDA walk is a later optimization if counts grow.
+- Every hit goes to `ctx.hits` (HitBuffer), which `damage` drains.
+
+## 5b. Combat data flow (Phase 3)
+- **Bullets:** `entities/projectiles/ProjectilePool.ts` is packed SoA (swap-remove; iterate backwards when despawning). Emitters (`systems/patterns/`) spawn through `fireBullet`, which applies the bullet-kind radius and life, the Cycle damage multiplier and the soft cap. `projectileSystem` integrates, ages and culls them.
+- **Enemies:** `entities/enemy.ts#spawnEnemy` builds Transform + Velocity + Health (× Cycle HP) + Target (render data: mesh index, scale, tint) + Enemy (archetype index plus up to 3 `EmitterState`s). `aiSystem` steers (chase or keepDistance + strafe), separates, despawns far units and fires patterns within `fireRange`. Death patterns fire on `enemy:killed` only, so erased units leave nothing.
+- **Director:** `waves/WaveDirector.ts` is a system in the `director` phase. See FACTIONS and the `balance-tuning` skill.
+- **Progression:** `xpSystem` (orbs + level-up) and `upgradeSystem` (`upgrade:chosen` / `upgrade:reroll`; `computeStats` → `ctx.stats` → player components). Shared helpers live in `upgrades/levelUp.ts` and `upgrades/satellites.ts`, because systems never import systems.
+- **UI bridge:** `game/uiBridge.ts` maps `player:levelUp` → `useGameStore.openLevelUp` and `player:died` → records + game over. UI commands (`chooseUpgrade`, `rerollUpgrades`, `restartRun`) emit on the bus. "Try again" bumps `runId`, and `GameCanvas` restarts the run on the same WebGL context.
+- **Run flags:** `?seed=N`, `?god`, `?stress=bullets`, `?debug` (`window.__AXIOM__`).
+- **System order:** input, history → waveDirector, stress, sandbox → ai → grid, playerMovement, aura, beam → projectiles → satellites, collision → damage → erasure → upgrades, xp, hud → cleanup.
 
 ## 6. EventBus (`game/core/EventBus.ts`)
 Typed and synchronous, with listeners kept in arrays per type. Payload objects for high-frequency events are **reused**: listeners must copy, never store, a payload. UI-facing events are coalesced and forwarded to zustand or the HUD bridge.
@@ -92,8 +107,9 @@ Typed and synchronous, with listeners kept in arrays per type. Payload objects f
 | `prop:destroyed` | propId, size, x, z | destruction | fragments, audio, XP |
 | `projectile:fired` | factionId, kind, x, z | emitters (throttled) | audio |
 | `xp:gained` | amount | progression | HUD |
-| `player:levelUp` | level, choices[3] | progression | store (opens picker), audio stinger |
-| `upgrade:chosen` | upgradeId | UI → store | upgrade system |
+| `player:levelUp` | level, choices[], rerolls | xp / upgrade systems | uiBridge (opens picker), audio stinger |
+| `upgrade:chosen` | upgradeId | UI command | upgrade system, audio |
+| `upgrade:reroll` | – | UI command | upgrade system |
 | `tier:changed` | tierId, cycle | director | music, UI banner |
 | `boss:spawned` / `boss:defeated` | bossId | director/damage | music, UI |
 | `cycle:started` | cycle | director | UI, music, postFX |

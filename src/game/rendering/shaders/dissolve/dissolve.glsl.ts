@@ -6,6 +6,7 @@ export const vert = /* glsl */ `
   attribute float aErase;
   attribute float aFlash;
   attribute float aSeed;
+  attribute vec3 aTint;
   uniform float uTime;
   uniform float uFreeze;
   uniform float uFlatten;
@@ -17,6 +18,7 @@ export const vert = /* glsl */ `
   varying vec3 vNormalW;
   varying vec3 vLocal;
   varying float vSeed;
+  varying vec3 vTint;
 
   ${noiseGlsl}
 
@@ -40,6 +42,7 @@ export const vert = /* glsl */ `
     vVanish = vanish;
     vLocal = position;
     vSeed = aSeed;
+    vTint = aTint;
     vNormalW = normalize(mat3(modelMatrix * instanceMatrix) * normal);
     gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(p, 1.0);
   }
@@ -47,7 +50,6 @@ export const vert = /* glsl */ `
 
 export const frag = /* glsl */ `
   uniform float uHdr;
-  uniform vec3 uTint;
   uniform vec3 uFlashColor;
   uniform vec3 uEraseColor;
   varying float vFlash;
@@ -57,6 +59,7 @@ export const frag = /* glsl */ `
   varying vec3 vNormalW;
   varying vec3 vLocal;
   varying float vSeed;
+  varying vec3 vTint;
 
   ${noiseGlsl}
 
@@ -66,7 +69,7 @@ export const frag = /* glsl */ `
     float edge = vVanish > 0.0 ? 1.0 - smoothstep(vVanish, vVanish + 0.15, n) : 0.0;
 
     float light = 0.3 + 0.7 * max(dot(normalize(vNormalW), normalize(vec3(-0.4, 0.85, 0.35))), 0.0);
-    vec3 col = uTint * light;
+    vec3 col = vTint * light;
     col = mix(col, uFlashColor * uHdr, vFlash);
     // Freeze flash, cooling into a violet silhouette while flattening
     vec3 erased = mix(uEraseColor * uHdr * 0.6, uFlashColor * uHdr, vFreeze);

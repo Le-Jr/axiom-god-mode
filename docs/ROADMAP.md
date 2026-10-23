@@ -31,18 +31,21 @@
 - [x] Docs synced; devlog; commit
 
 ## Phase 3: Combat loop
-- [ ] SoA ProjectilePool + instanced bullet renderer
-- [ ] Spatial hash grid + collision system + tests
-- [ ] Pattern emitters: aimed, spread, ring, spiral (+ tests)
-- [ ] Police + SWAT factions (data) + enemy instanced renderer
-- [ ] WaveDirector v1 (budget, tier unlock by time and level)
-- [ ] Damage, erasure, aura kills, player hits → screen distortion
-- [ ] XP orbs, leveling, 3-choice picker with ~8 buffs
-- [ ] Game over screen with run stats
-- [ ] Stress test results (`?stress=bullets`) logged
-- [ ] **STOP and report**: perf numbers, decisions, next steps
+- [x] SoA ProjectilePool + instanced bullet renderer
+- [x] Spatial hash grid + collision system + tests
+- [x] Pattern emitters: aimed, spread, ring, spiral (+ tests)
+- [x] Police + SWAT factions (data) + enemy instanced renderer
+- [x] WaveDirector v1 (budget, tier unlock by time and level)
+- [x] Damage, erasure, aura kills, player hits → screen distortion
+- [x] XP orbs, leveling, 3-choice picker with ~8 buffs
+- [x] Game over screen with run stats
+- [x] Stress test results (`?stress=bullets`) logged
+- [x] **STOP and report**: perf numbers, decisions, next steps
 
 ## Later-phase backlog
+- [ ] Breach Captain / Siege Colonel mini-bosses; SWAT mechanics deferred in Phase 3 (Marksman laser telegraph, Shield frontal block, Van deploy)
+- [ ] Per-faction weapon SFX ids (currently `fire_generic`)
+- [ ] Measure on the reference laptop (Iris Xe) and run the 30-minute soak
 - [ ] Destructible environment: procedural facility/city chunks, prop HP, pooled fragments, fire
 - [ ] Remaining factions: army, armor, air, society, aliens, heroes, demiurge, cosmic
 - [ ] Bosses: Tank Commander, Squadron Leader, Grand Master, Alien Mothership, Hero Team, The Demiurge, Cosmic Entity

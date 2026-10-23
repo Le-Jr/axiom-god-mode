@@ -9,12 +9,13 @@ import { beamSystem } from '../beamSystem';
 import { cleanupSystem } from '../cleanupSystem';
 import { damageSystem } from '../damageSystem';
 import { erasureSystem } from '../erasureSystem';
+import { gridSystem } from '../gridSystem';
 import { playerMovementSystem } from '../playerMovementSystem';
 
 function setup(): { ctx: TestContext; loop: GameLoop } {
   const ctx = createTestContext({ sandbox: { enabled: false } });
   spawnPlayer(ctx);
-  const loop = new GameLoop(ctx, [playerMovementSystem, auraSystem, beamSystem, damageSystem, erasureSystem, cleanupSystem]);
+  const loop = new GameLoop(ctx, [gridSystem, playerMovementSystem, auraSystem, beamSystem, damageSystem, erasureSystem, cleanupSystem]);
   loop.init();
   return { ctx, loop };
 }

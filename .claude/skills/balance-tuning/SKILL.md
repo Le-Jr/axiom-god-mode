@@ -9,16 +9,16 @@ All tunables live in `src/game/config/`. Faction and upgrade numbers live in the
 
 | File | Contents |
 |---|---|
-| `config/player.ts` | HP, move speed/accel, low-HP threshold, pickup radius |
+| `config/player.ts` | HP, move speed/accel, low-HP threshold, pickup radius, heavy-hit i-frames |
 | `config/aura.ts` | radius, damage, pulse interval |
 | `config/beam.ts` | range, width, charge time, energy max/drain/recharge, erasure rate |
-| `config/progression.ts` | XP curve `base * level^exponent`, XP per enemy tier / prop size |
-| `config/director.ts` | budget growth, tier decay, unlocks override, boss timing |
-| `config/cycle.ts` | `hpBase`, `dmgBase`, `densityStep`, `timeCompression`, `rarityShift` |
-| `config/upgrades.ts` | rarity weights, choices per level |
+| `config/combat.ts` | `projectiles` (kinds, cull), `enemies` (fire range, separation, grid), `director` (budget, spawn ring, tier decay), `cycle` (`hpBase`, `dmgBase`, `densityStep`, `timeCompression`, `rarityShift`), `progression` (XP curve `xpBase * level^xpExponent`, orbs), `upgrades` (rarity weights, rerolls, pity, satellites), `stress` |
+| `src/game/factions/*.ts` | per-unit HP, speed, XP, budget cost, contact DPS, patterns |
+| `src/game/upgrades/defs/index.ts` | per-buff values |
 | `config/performance.ts` | pool capacities, soft caps |
 | `config/rendering.ts` | quality presets |
-| `config/audio.ts` | intensity weights, stem thresholds, tracks |
+| `config/audio.ts` | voices, hum pitch, pause duck, spatial distances |
+| `config/beam.ts`, `config/aura.ts`, `config/input.ts`, `config/sandbox.ts` | beam/erasure, aura, key bindings, test dummies |
 
 ## Steps
 1. Find the value. If it's hardcoded in a system, **move it to config first** (same commit).

@@ -10,10 +10,10 @@ Factions are pure data in `src/game/factions/<tierId>.ts`, registered in `src/ga
 ## Steps
 1. **Run the IP check first** (`docs/ART_DIRECTION.md#ip-originality-checklist`): name, silhouette and powers. Heroes and secret societies need extra care.
 2. Copy `templates/faction.ts` to `src/game/factions/<tierId>.ts`.
-3. For each unit, define `hp`, `speed`, `radius`, `xp`, `budgetCost`, `behavior` (from `ai` behaviors: `chase | keepDistance | strafe | flyby | stationary | deployer`), `patterns` (PatternDefs; see the `bullet-pattern` skill), and `visual` (a placeholder mesh kind + faction tint).
+3. For each unit, define `hp`, `speed`, `radius`, `xp`, `budgetCost`, `contactDps`, `behavior` (implemented: `chase | keepDistance` with `preferredDistance`; planned: `flyby`, `stationary`, `deployer`), `patterns` (at most 3 PatternDefs; see the `bullet-pattern` skill), an optional `deathPattern` (fires only when the unit is *killed*, never when erased), and `visual` (`mesh: 'capsule' | 'box' | 'wedge'`, `scale`, optional `tint` that overrides the faction tint).
 4. Set the **unlock rule** (`unlock: { time, level }`), the `spawnWeight`, and the `boss` (optional).
 5. Bosses: list `phases` with an HP threshold, patterns and adds. The boss spawns on tier entry. Emit `boss:spawned` and `boss:defeated` (handled by the director).
-6. Register the faction in `factions/index.ts`. Never reorder existing tiers without an ADR.
+6. Register the faction in the `FACTIONS` array in `factions/index.ts`. `ARCHETYPES` and the director's tier tables derive from it. Never reorder existing tiers without an ADR. A new mesh kind also needs `MESH_KINDS` plus a `createShape` case in `rendering/pools/EnemyPool.tsx` and an `<EnemyPool mesh=…>` in `GameCanvas`.
 7. If a unit needs a new behavior or emitter, add it via the `ecs-system` or `bullet-pattern` skills first.
 8. Tune numbers relative to player power (see the header of `docs/FACTIONS.md`). Use the `balance-tuning` skill for global multipliers.
 9. **Update `docs/FACTIONS.md`**: tier row, unit table, boss and patterns.
@@ -32,4 +32,4 @@ Factions are pure data in `src/game/factions/<tierId>.ts`, registered in `src/ga
 - [ ] Placeholder visual + tint chosen
 - [ ] SFX ids registered
 - [ ] FACTIONS.md updated
-- [ ] Playtested via `?tier=<tierId>` debug param (Phase 3+)
+- [ ] Playtested (`/play?god&debug`; force a tier with `window.__AXIOM__.ctx.tier = n`)

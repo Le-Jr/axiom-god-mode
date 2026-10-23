@@ -33,6 +33,11 @@ export function attachAudio(ctx: GameContext): () => void {
   ensureHum();
 
   const listener = () => ({ listenerX: ctx.view.targetX, listenerZ: ctx.view.targetZ });
+  // Throttles for high-frequency events (ms timestamps).
+  let lastFire = 0;
+  let lastHit = 0;
+  const FIRE_GAP_MS = 60;
+  const HIT_GAP_MS = 80;
 
   const offs = [
     bus.on('aura:pulse', (e) => {
@@ -53,6 +58,20 @@ export function attachAudio(ctx: GameContext): () => void {
     bus.on('beam:empty', () => audio.play('beam_empty')),
     bus.on('enemy:erased', (e) => audio.play('erase_tear', { x: e.x, z: e.z, ...listener() })),
     bus.on('enemy:killed', (e) => audio.play('explosion_s', { x: e.x, z: e.z, ...listener() })),
+    bus.on('projectile:fired', (e) => {
+      const now = performance.now();
+      if (now - lastFire < FIRE_GAP_MS) return;
+      lastFire = now;
+      audio.play('fire_generic', { x: e.x, z: e.z, ...listener() });
+    }),
+    bus.on('player:damaged', () => {
+      const now = performance.now();
+      if (now - lastHit < HIT_GAP_MS) return;
+      lastHit = now;
+      audio.play('impact_player');
+    }),
+    bus.on('player:levelUp', () => audio.play('levelup_stinger')),
+    bus.on('upgrade:chosen', () => audio.play('ui_select')),
     bus.on('tick:paused', () => audio.setPaused(true)),
     bus.on('tick:resumed', () => audio.setPaused(false)),
   ];

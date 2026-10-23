@@ -12,6 +12,7 @@
   --color-ember: #ff5a2e;
   --color-warn: #ffb020;
   --color-gold: #ffe7a3;
+  --color-rare: #6fa8ff;
 
   --font-display: var(--font-unbounded), system-ui, sans-serif;
   --font-hud: var(--font-chakra), system-ui, sans-serif;

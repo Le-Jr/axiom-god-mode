@@ -1,6 +1,6 @@
 import { spawnPlayer } from '@/game/entities/player';
 import { SYSTEMS } from '@/game/systems';
-import { createGameContext, type GameContext } from './GameContext';
+import { createGameContext, type GameContext, type RunFlags } from './GameContext';
 import { GameLoop } from './GameLoop';
 import { randomSeed } from './Rng';
 
@@ -13,9 +13,9 @@ export const runtime: { ctx: GameContext | null; loop: GameLoop | null } = {
   loop: null,
 };
 
-export function startRun(seed: number = randomSeed()): GameLoop {
+export function startRun(seed: number = randomSeed(), flags: Partial<RunFlags> = {}): GameLoop {
   endRun();
-  const ctx = createGameContext(seed);
+  const ctx = createGameContext(seed, undefined, flags);
   spawnPlayer(ctx);
   const loop = new GameLoop(ctx, SYSTEMS);
   loop.init();

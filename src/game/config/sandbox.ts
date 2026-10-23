@@ -1,6 +1,6 @@
 // Phase 2 test dummies. Removed or disabled once the WaveDirector exists (Phase 3).
 export const sandbox = {
-  enabled: true,
+  enabled: false, // replaced by the WaveDirector in Phase 3; flip for isolated beam/aura testing
   dummyCount: 16,
   minDistance: 7, // from the player
   maxDistance: 16,

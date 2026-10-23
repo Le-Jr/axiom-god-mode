@@ -9,7 +9,7 @@ You are the Unbound. The world will not stop sending things to stop you.
 
 <br/>
 
-![Status](https://img.shields.io/badge/status-phase%201%20%C2%B7%20scaffold-9B6BFF?style=flat-square)
+![Status](https://img.shields.io/badge/status-phase%203%20%C2%B7%20combat%20loop-9B6BFF?style=flat-square)
 ![Next.js](https://img.shields.io/badge/Next.js-App%20Router-05070D?style=flat-square&logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![three.js](https://img.shields.io/badge/three.js-R3F-05070D?style=flat-square&logo=threedotjs&logoColor=5CF2FF)
@@ -83,7 +83,7 @@ flowchart LR
 ## Getting started
 
 > [!NOTE]
-> **Phase 1** is in: menu, the `/play` scene with bloom, the fixed-timestep loop and the F3 debug overlay. Gameplay arrives in Phases 2–3.
+> **Phase 3** is in: you can play. Move, pulse the aura, erase police and SWAT with the beam, level up with 8 buffs, and die. Debug: `/play?stress=bullets` (2,500 bullets + 300 enemies), `?god`, `?seed=N`, F3.
 
 ```bash
 npm install
@@ -123,8 +123,8 @@ docs/         design and engineering knowledge base
 
 - [x] **Phase 0**: design docs, architecture, project skills
 - [x] **Phase 1**: scaffold, fixed-timestep loop, stores, empty scene, F3 overlay
-- [ ] **Phase 2**: the Unbound, movement, aura, Erasure Beam, HUD
-- [ ] **Phase 3**: bullets, collisions, police and SWAT, XP and buffs, game over
+- [x] **Phase 2**: the Unbound, movement, aura, Erasure Beam, HUD
+- [x] **Phase 3**: bullets, collisions, police and SWAT, XP and buffs, game over
 - [ ] Then: every faction and boss, Cycles, destructible city, adaptive music, intro cutscene
 
 ## Originality

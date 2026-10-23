@@ -10,4 +10,5 @@ export const player = {
   heavyHitRatio: 0.05, // hits >= this * maxHp are "heavy"
   heavyHitIFrames: 0.5, // seconds of invulnerability after a heavy hit
   minAimDistance: 0.5, // below this the aim direction keeps its last value
+  pickupRadius: 3.5, // XP orbs inside this fly to the player
 } as const;

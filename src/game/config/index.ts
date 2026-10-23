@@ -1,6 +1,7 @@
 import { audio } from './audio';
 import { aura } from './aura';
 import { beam, erasure } from './beam';
+import { cycle, director, enemies, progression, projectiles, stress, upgrades } from './combat';
 import { debug } from './debug';
 import { input } from './input';
 import { loop } from './loop';
@@ -32,6 +33,13 @@ const raw = {
   input,
   sandbox,
   audio,
+  projectiles,
+  enemies,
+  director,
+  cycle,
+  progression,
+  upgrades,
+  stress,
   rendering: { palette, quality, camera, postfx, world, cycleHueStep },
   debug,
 } as const;
@@ -41,3 +49,4 @@ export const config: GameConfig = raw;
 
 export type { QualityLevel, QualityPreset } from './rendering';
 export type { InputAction } from './input';
+export { BULLET_KINDS, type BulletKindId } from './combat';

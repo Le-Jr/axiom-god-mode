@@ -72,7 +72,7 @@ Spreads, rings, spirals, homing shots, lasers (telegraphed), artillery (ground m
 - XP comes from erasures (by enemy tier) and destruction (by prop size). Orbs drift to the player inside `pickupRadius`.
   XP comes as **physical orbs**, because collecting them creates movement decisions. Orbs merge above the pool soft cap.
 - Level-up **pauses the simulation** and offers 3 random buffs weighted by rarity. Full catalog: [UPGRADES.md](UPGRADES.md).
-- The XP curve lives in `config/progression.ts`: `xpToNext(level) = base * level^exponent`.
+- The XP curve lives in `config.progression` (`config/combat.ts`): `xpToNext(level) = round(xpBase * level^xpExponent)`.
 - **Rerolls:** the player starts with 1 reroll and earns +1 every 10 levels (max 3 stored). Banish and skip-for-heal are not in v1 (backlog).
 
 ### 5.7 WaveDirector
@@ -100,7 +100,7 @@ Spreads, rings, spirals, homing shots, lasers (telegraphed), artillery (ground m
 | Cycle | Clearing the cosmic tier | Multipliers, remixes, Cycle counter |
 
 ## 8. Cycle scaling
-For Cycle `c` (starting at 0), with initial values in `config/cycle.ts`:
+For Cycle `c` (starting at 0), with initial values in `config.cycle` (`config/combat.ts`):
 - `hpMult = cycle.hpBase ^ c` (start 1.6)
 - `dmgMult = cycle.dmgBase ^ c` (start 1.3)
 - `densityMult = min(1 + cycle.densityStep * c, perf cap)`. Density is capped by [PERFORMANCE.md](PERFORMANCE.md) budgets. Above the cap, difficulty moves into HP and pattern complexity.

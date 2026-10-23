@@ -76,7 +76,7 @@ Until real stems exist, `audio/procedural/` synthesizes each stem live with osci
 
 ### Implemented (Phase 2)
 All procedural (`audio/sfxRecipes.ts`); registry in `audio/sfxRegistry.ts`; event mapping in `audio/listeners.ts` (attached per run by `GameCanvas`):
-`aura_hum` (loop, pitch rises with level), `aura_pulse`, `beam_charge`, `beam_loop` (loop while channeling), `beam_tail`, `beam_empty`, `erase_tear` (spatial), `explosion_s` (spatial, aura kills). Voice counts per id are released by a timer after each recipe's duration. Pause ducks the sfx and music buses. File loading (`files` in the registry) is not wired yet; every id falls back to its recipe.
+`aura_hum` (loop, pitch rises with level), `aura_pulse`, `beam_charge`, `beam_loop` (loop while channeling), `beam_tail`, `beam_empty`, `erase_tear` (spatial), `explosion_s` (spatial, aura kills). Phase 3 adds `fire_generic` (spatial, throttled to one per 60 ms, a single generic id for now instead of per-faction ids), `impact_player` (throttled to one per 80 ms), `levelup_stinger` (ui bus) and `ui_select`. Voice counts per id are released by a timer after each recipe's duration. Pause ducks the sfx and music buses. File loading (`files` in the registry) is not wired yet; every id falls back to its recipe.
 
 ## Mixing rules
 - Voice limiting per id: when full, steal the oldest voice of the same id. Low-priority sounds are dropped rather than stolen when the global voice count exceeds 48.

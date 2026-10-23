@@ -1,4 +1,19 @@
-import { auraHum, auraPulse, beamCharge, beamEmpty, beamLoop, beamTail, eraseTear, explosionSmall, type LoopRecipe, type SfxRecipe } from './sfxRecipes';
+import {
+  auraHum,
+  auraPulse,
+  beamCharge,
+  beamEmpty,
+  beamLoop,
+  beamTail,
+  eraseTear,
+  explosionSmall,
+  fireTick,
+  impactPlayer,
+  levelUpStinger,
+  uiSelect,
+  type LoopRecipe,
+  type SfxRecipe,
+} from './sfxRecipes';
 
 export type Bus = 'sfx' | 'music' | 'ui';
 
@@ -24,6 +39,10 @@ export const SFX = {
   beam_empty: { bus: 'sfx', volume: 0.7, pitchVar: 0, volVar: 0, maxVoices: 1, priority: 4, spatial: false, recipe: beamEmpty },
   erase_tear: { bus: 'sfx', volume: 0.8, pitchVar: 0.08, volVar: 2, maxVoices: 6, priority: 3, spatial: true, recipe: eraseTear },
   explosion_s: { bus: 'sfx', volume: 0.6, pitchVar: 0.1, volVar: 3, maxVoices: 8, priority: 2, spatial: true, recipe: explosionSmall },
+  fire_generic: { bus: 'sfx', volume: 0.35, pitchVar: 0.07, volVar: 2, maxVoices: 4, priority: 1, spatial: true, recipe: fireTick },
+  impact_player: { bus: 'sfx', volume: 0.6, pitchVar: 0.06, volVar: 1, maxVoices: 4, priority: 4, spatial: false, recipe: impactPlayer },
+  levelup_stinger: { bus: 'ui', volume: 0.8, pitchVar: 0, volVar: 0, maxVoices: 1, priority: 5, spatial: false, recipe: levelUpStinger },
+  ui_select: { bus: 'ui', volume: 0.6, pitchVar: 0.03, volVar: 0, maxVoices: 2, priority: 5, spatial: false, recipe: uiSelect },
 } satisfies Record<string, SfxDef>;
 
 export type SfxId = keyof typeof SFX;

@@ -1,15 +1,12 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { hudBridge } from '@/game/core/hudBridge';
+import { FACTIONS } from '@/game/factions';
 import { useGameStore } from '@/store/useGameStore';
+import { formatTime } from './format';
 
 const REFRESH_MS = 50; // ~20 Hz
-
-function formatTime(seconds: number): string {
-  const s = Math.floor(seconds);
-  const m = Math.floor(s / 60);
-  return `${m}:${String(s % 60).padStart(2, '0')}`;
-}
+const TIER_NAMES = new Map(FACTIONS.map((f) => [f.id, f.name]));
 
 /**
  * HP / energy / level / timer. Values go straight from hudBridge to DOM refs on an interval:
@@ -24,6 +21,8 @@ export function Hud() {
   const enText = useRef<HTMLSpanElement>(null);
   const level = useRef<HTMLSpanElement>(null);
   const timer = useRef<HTMLSpanElement>(null);
+  const tier = useRef<HTMLSpanElement>(null);
+  const xpFill = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!visible) return;
@@ -37,6 +36,8 @@ export function Hud() {
       if (enText.current) enText.current.textContent = `${Math.floor(h.energy)}`;
       if (level.current) level.current.textContent = `${h.level}`;
       if (timer.current) timer.current.textContent = formatTime(h.runTime);
+      if (tier.current) tier.current.textContent = TIER_NAMES.get(h.tierId) ?? '';
+      if (xpFill.current) xpFill.current.style.transform = `scaleX(${h.xpToNext > 0 ? Math.min(1, h.xp / h.xpToNext) : 0})`;
       if (root.current) {
         root.current.dataset.low = h.lowHp ? 'true' : 'false';
         root.current.dataset.locked = h.energyLocked ? 'true' : 'false';
@@ -57,10 +58,15 @@ export function Hud() {
         </span>
       </div>
 
-      <div className="absolute top-4 left-1/2 -translate-x-1/2">
+      <div className="absolute inset-x-0 top-0 h-[3px] bg-core/5">
+        <div ref={xpFill} className="h-full origin-left bg-axiom shadow-[0_0_10px_rgba(155,107,255,0.8)] transition-transform duration-100" />
+      </div>
+
+      <div className="absolute top-4 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1">
         <span ref={timer} className="font-display text-xl font-light tracking-[0.12em] text-core/90 tabular-nums">
           0:00
         </span>
+        <span ref={tier} className="font-hud text-sm text-mist" />
       </div>
 
       <div className="absolute bottom-6 left-6 flex w-[min(360px,40vw)] flex-col gap-3">

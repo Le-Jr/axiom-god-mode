@@ -23,8 +23,9 @@ export const playerMovementSystem: System = {
       iz /= len;
     }
     const k = damp(config.player.moveResponsiveness, step);
-    v.vx += (ix * config.player.moveSpeed - v.vx) * k;
-    v.vz += (iz * config.player.moveSpeed - v.vz) * k;
+    const speed = ctx.stats.moveSpeed;
+    v.vx += (ix * speed - v.vx) * k;
+    v.vz += (iz * speed - v.vz) * k;
     t.x += v.vx * step;
     t.z += v.vz * step;
 

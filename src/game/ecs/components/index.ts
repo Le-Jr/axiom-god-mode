@@ -1,4 +1,7 @@
+import type { EmitterState } from '@/game/systems/patterns/types';
 import { defineComponent } from '../ComponentStore';
+
+const MAX_EMITTERS = 3; // matches factions MAX_PATTERNS_PER_UNIT
 
 export interface TransformData {
   x: number;
@@ -96,17 +99,53 @@ export interface TargetData {
   air: boolean;
   /** Seconds remaining on the white hit flash. */
   flash: number;
+  /** Render data: index into MESH_KINDS, uniform scale and linear-ish tint (0..1). */
+  meshIndex: number;
+  scale: number;
+  tintR: number;
+  tintG: number;
+  tintB: number;
 }
 
 export const Target = defineComponent<TargetData>(
   'Target',
-  () => ({ radius: 0.5, archetypeId: '', xp: 0, air: false, flash: 0 }),
+  () => ({ radius: 0.5, archetypeId: '', xp: 0, air: false, flash: 0, meshIndex: 0, scale: 1, tintR: 0.24, tintG: 0.42, tintB: 1 }),
   (d) => {
     d.radius = 0.5;
     d.archetypeId = '';
     d.xp = 0;
     d.air = false;
     d.flash = 0;
+    d.meshIndex = 0;
+    d.scale = 1;
+    d.tintR = 0.24;
+    d.tintG = 0.42;
+    d.tintB = 1;
+  },
+);
+
+/** AI-driven hostile unit. `unit` indexes ARCHETYPES. */
+export interface EnemyData {
+  unit: number;
+  emitters: EmitterState[];
+  strafeDir: number; // +1 / -1
+}
+
+export const Enemy = defineComponent<EnemyData>(
+  'Enemy',
+  () => ({
+    unit: 0,
+    emitters: Array.from({ length: MAX_EMITTERS }, () => ({ timer: 0, burst: 0, angle: 0 })),
+    strafeDir: 1,
+  }),
+  (d) => {
+    d.unit = 0;
+    d.strafeDir = 1;
+    for (const em of d.emitters) {
+      em.timer = 0;
+      em.burst = 0;
+      em.angle = 0;
+    }
   },
 );
 

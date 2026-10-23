@@ -4,6 +4,8 @@ export const HitKind = {
   aura: 0,
   beam: 1,
   bullet: 2,
+  contact: 3,
+  satellite: 4,
 } as const;
 export type HitKind = (typeof HitKind)[keyof typeof HitKind];
 

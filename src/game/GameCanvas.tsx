@@ -3,36 +3,55 @@ import { Canvas } from '@react-three/fiber';
 import { useEffect } from 'react';
 import { attachAudio } from '@/game/audio/listeners';
 import { config } from '@/game/config';
-import { endRun, startRun } from '@/game/core/runtime';
+import type { RunFlags } from '@/game/core/GameContext';
+import { endRun, runtime, startRun } from '@/game/core/runtime';
 import { CameraRig, initialCameraPosition } from '@/game/rendering/CameraRig';
 import { DebugProbe } from '@/game/rendering/DebugProbe';
 import { InputBinder } from '@/game/rendering/InputBinder';
 import { LoopDriver } from '@/game/rendering/LoopDriver';
 import { AuraRing } from '@/game/rendering/player/AuraRing';
 import { ErasureBeam } from '@/game/rendering/player/ErasureBeam';
+import { Satellites } from '@/game/rendering/player/Satellites';
 import { UnboundBody } from '@/game/rendering/player/UnboundBody';
-import { TargetPool } from '@/game/rendering/pools/TargetPool';
+import { BulletPool } from '@/game/rendering/pools/BulletPool';
+import { EnemyPool } from '@/game/rendering/pools/EnemyPool';
+import { OrbPool } from '@/game/rendering/pools/OrbPool';
 import { PostFX } from '@/game/rendering/PostFX';
+import { attachVfx } from '@/game/rendering/vfxBridge';
 import { Environment } from '@/game/rendering/world/Environment';
 import { Ruins } from '@/game/rendering/world/Ruins';
+import { attachUiBridge } from '@/game/uiBridge';
 import { useGameStore } from '@/store/useGameStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
 
-function readSeedParam(): number | undefined {
-  const raw = new URLSearchParams(window.location.search).get('seed');
+/** `?seed=N`, `?stress=bullets`, `?god`, `?debug` (PERFORMANCE.md, CLAUDE.md). */
+function readRunParams(): { seed?: number; flags: Partial<RunFlags>; debug: boolean } {
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get('seed');
   const n = raw === null ? NaN : Number(raw);
-  return Number.isFinite(n) ? n >>> 0 : undefined;
+  return {
+    seed: Number.isFinite(n) ? n >>> 0 : undefined,
+    flags: { stress: params.get('stress') === 'bullets', god: params.has('god') },
+    debug: params.has('debug'),
+  };
 }
 
 /** Client-only (loaded with `ssr: false`). Owns the run lifecycle and the WebGL canvas. */
 export default function GameCanvas() {
   const quality = useSettingsStore((s) => s.quality);
+  const runId = useGameStore((s) => s.runId);
   const preset = config.rendering.quality[quality];
   const cam = config.rendering.camera;
 
+  // One run per runId: "Try again" bumps runId and restarts on the same WebGL context.
   useEffect(() => {
-    const loop = startRun(readSeedParam());
+    const { seed, flags, debug } = readRunParams();
+    const loop = startRun(seed, flags);
+    // `?debug`: expose the live runtime for console/Playwright inspection.
+    if (debug) (window as unknown as { __AXIOM__?: typeof runtime }).__AXIOM__ = runtime;
     const detachAudio = attachAudio(loop.ctx);
+    const detachUi = attachUiBridge(loop.ctx);
+    const detachVfx = attachVfx(loop.ctx);
     useGameStore.getState().beginRun();
 
     // Store phase (low frequency) → loop pause state.
@@ -47,11 +66,13 @@ export default function GameCanvas() {
     return () => {
       unsubscribe();
       document.removeEventListener('visibilitychange', onVisibility);
+      detachVfx();
+      detachUi();
       detachAudio();
       endRun();
       useGameStore.getState().setPhase('menu');
     };
-  }, []);
+  }, [runId]);
 
   return (
     <Canvas
@@ -68,9 +89,14 @@ export default function GameCanvas() {
       <CameraRig />
       <Environment />
       <Ruins />
-      <TargetPool />
+      <EnemyPool mesh="capsule" />
+      <EnemyPool mesh="box" />
+      <EnemyPool mesh="wedge" />
+      <OrbPool />
       <AuraRing />
       <UnboundBody />
+      <Satellites />
+      <BulletPool />
       <ErasureBeam />
       <PostFX preset={preset} />
       <DebugProbe />

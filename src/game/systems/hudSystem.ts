@@ -1,6 +1,8 @@
 import type { GameEvents } from '@/game/core/events';
 import type { System } from '@/game/ecs/System';
-import { Health, Player, Target } from '@/game/ecs/components';
+import { Health, Player } from '@/game/ecs/components';
+import { FACTIONS } from '@/game/factions';
+import { xpToNext } from '@/game/upgrades/progress';
 
 const _hpRatio: GameEvents['player:lowHp'] = { hpRatio: 1 };
 
@@ -12,7 +14,9 @@ export const hudSystem: System = {
     const { world, hud, config } = ctx;
     hud.runTime = ctx.time.simTime;
     hud.cycle = ctx.cycle;
-    ctx.debug.counts.enemies = world.store(Target).size;
+    hud.tierId = FACTIONS[ctx.tier]?.id ?? '';
+    hud.xp = ctx.progress.xp;
+    hud.xpToNext = xpToNext(ctx.progress.level, config);
     const e = ctx.player;
     if (e < 0 || !world.isAlive(e)) return;
     const h = world.get(e, Health);

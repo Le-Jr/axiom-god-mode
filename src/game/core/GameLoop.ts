@@ -62,6 +62,7 @@ export class GameLoop {
     let substeps = 0;
     const t0 = now();
     while (this.accumulator >= step && substeps < config.loop.maxSubsteps) {
+      if (this.pauseMask !== 0) break; // a tick paused the loop (level-up, death): stop mid-frame
       this.tick(step);
       this.accumulator -= step;
       substeps++;

@@ -4,7 +4,8 @@ import { frag, vert } from './dissolve.glsl';
 
 const { palette } = config.rendering;
 
-export function createDissolveMaterial(tint: string): ShaderMaterial {
+/** Per-instance tint comes from the `aTint` attribute (enemy archetype colors). */
+export function createDissolveMaterial(): ShaderMaterial {
   return new ShaderMaterial({
     vertexShader: vert,
     fragmentShader: frag,
@@ -14,7 +15,6 @@ export function createDissolveMaterial(tint: string): ShaderMaterial {
       uFreeze: { value: config.erasure.freeze },
       uFlatten: { value: config.erasure.flatten },
       uVanish: { value: config.erasure.vanish },
-      uTint: { value: new Color(tint) },
       uFlashColor: { value: new Color(palette.unboundCore) },
       uEraseColor: { value: new Color(palette.axiomViolet) },
     },

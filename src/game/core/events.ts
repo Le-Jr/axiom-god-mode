@@ -8,6 +8,7 @@ export interface RunStats {
   timeSurvived: number;
   level: number;
   erasures: number;
+  kills: number;
   cycle: number;
   tierId: string;
 }
@@ -22,7 +23,7 @@ export interface GameEvents {
   'player:lowHp': { hpRatio: number };
   'player:recovered': { hpRatio: number };
   'player:died': RunStats;
-  'player:levelUp': { level: number; choices: readonly string[] };
+  'player:levelUp': { level: number; choices: readonly string[]; rerolls: number };
 
   'beam:start': Record<string, never>;
   'beam:stop': Record<string, never>;
@@ -40,6 +41,7 @@ export interface GameEvents {
 
   'xp:gained': { amount: number };
   'upgrade:chosen': { upgradeId: string };
+  'upgrade:reroll': Record<string, never>;
 
   'tier:changed': { tierId: string; cycle: number };
   'boss:spawned': { bossId: string };
@@ -58,7 +60,7 @@ const EVENT_NAME_SET: Record<GameEventName, true> = {
   'player:levelUp': true, 'beam:start': true, 'beam:stop': true, 'beam:empty': true,
   'aura:pulse': true, 'enemy:spawned': true, 'enemy:damaged': true, 'enemy:erased': true,
   'enemy:killed': true, 'prop:destroyed': true, 'projectile:fired': true, 'telegraph:spawn': true,
-  'xp:gained': true, 'upgrade:chosen': true, 'tier:changed': true, 'boss:spawned': true,
+  'xp:gained': true, 'upgrade:chosen': true, 'upgrade:reroll': true, 'tier:changed': true, 'boss:spawned': true,
   'boss:defeated': true, 'cycle:started': true, 'cutscene:done': true,
 };
 

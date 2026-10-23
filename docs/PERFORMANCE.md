@@ -1,6 +1,14 @@
 # Performance
 
-**Target:** 60 FPS with **2,000+ active enemy bullets** on a mid-range laptop The **reference machine** is a laptop with an Intel Core i5-1135G7 and Iris Xe integrated graphics, 16 GB RAM, Chrome stable, a 1080p display and DPR capped at 1.5. It is the weakest common "mid-range" target. If that hardware isn't available, the closest machine on hand is used and noted in DEVLOG.
+**Target:** 60 FPS with **2,000+ active enemy bullets** on a mid-range laptop. The **reference machine** is a laptop with an Intel Core i5-1135G7 and Iris Xe integrated graphics, 16 GB RAM, Chrome stable, a 1080p display and DPR capped at 1.5. It is the weakest common "mid-range" target. If that hardware isn't available, the closest machine on hand is used and noted in DEVLOG.
+
+## Measured (Phase 3, 2026-10-23)
+`/play?stress=bullets` holds about 2,474 bullets and 300 enemies, with the director off and the player invulnerable. It was measured in headless Chromium on the dev desktop (Ryzen 7 5700X + RTX 5060, ANGLE/Vulkan, 1600×900, quality medium). The reference laptop has **not** been measured yet.
+| Run | FPS avg / 1% low | Sim ms (sampled) | Draw calls | Triangles |
+|---|---|---|---|---|
+| Stress, no throttle | 60 / 60 (vsync) | 0.2–0.5 | 25 | 61.5k |
+| Stress, CPU throttled 4× (CDP) | 60 / 57 | 0.8–2.2 | 25 | 61.5k |
+| Normal play, ~35 enemies | 60 / 58 | < 0.1 | 26 | 9k |
 
 ## Budgets (per frame at 60 FPS = 16.6 ms)
 | Item | Budget |
@@ -46,7 +54,7 @@
 
 ## Profiling checklist
 - [ ] F3 overlay: FPS (1 s avg + 1% low), frame ms, sim ms, draw calls (`gl.info.render.calls`), triangles, active counts per pool, dropped spawns.
-- [ ] Stress scene: `/play?stress=bullets` spawns 2,500 bullets in rings and 300 enemies. Record FPS.
+- [ ] Stress scene: `/play?stress=bullets&debug` holds about 2,500 bullets in rings and 300 enemies. Record FPS. (`?debug` exposes `window.__AXIOM__` = the live runtime.)
 - [ ] Chrome Performance panel, 10 s capture: no long tasks > 50 ms, and GC slices are small.
 - [ ] Memory panel: 3 heap snapshots 5 min apart in a run show no growth in retained `Vector3`/`Object`/`Array` counts.
 - [ ] React Profiler: zero commits during steady gameplay.

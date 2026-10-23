@@ -152,3 +152,32 @@ Format: `ADR-NNN — Title` · date · status (Accepted / Superseded by ADR-x / 
 - **Context:** `eslint-config-next` 16 ships the React Compiler rule `react-hooks/immutability`, which rejects mutating `useMemo` values after render.
 - **Decision:** Create materials and geometries with `useMemo` (for disposal), but inside `useFrame` reach them through the mesh ref (`ref.current.material`, `ref.current.geometry`). Documented in the `r3f-performance` skill.
 
+### ADR-024: Collision strategy per pair type
+2026-10-23 · Accepted
+- **Decision:** Enemy bullets vs the player use a linear pass over the packed bullet pool (one circle test each, which is optimal for a single target). The hashed spatial grid (`core/SpatialHash.ts`, rebuilt every tick) serves many-vs-many and area queries: aura, satellites, enemy separation and contact. The beam ray-tests the Target query (≤ 300) and sorts hits for pierce.
+- **Consequences:** Measured sim cost at 2,474 bullets + 300 enemies is 0.2–0.5 ms (about 1 ms at 4× CPU throttle). A grid DDA for the beam is deferred until counts demand it.
+
+### ADR-025: Emitter split into timing, volley and spawn
+2026-10-23 · Accepted
+- **Decision:** `stepEmitter` owns cooldown and burst timing (at most one volley per tick). `EmitterFn`s (`aimed`, `spread`, `ring`, `spiral`) fire one volley with Cycle `complexity` scaling. `fireBullet` applies bullet-kind radius and life, **Cycle damage at spawn**, and the soft cap. Death patterns reuse emitters on `enemy:killed` only.
+- **Consequences:** New patterns are mostly data. One place enforces caps and Cycle damage.
+
+### ADR-026: Upgrade flow via the bus, derived stats, restart on the same canvas
+2026-10-23 · Accepted
+- **Decision:** `ctx.stats` is recomputed from base config plus owned buffs on every pick (`computeStats`). UI commands (`chooseUpgrade`, `rerollUpgrades`, `restartRun` in `game/uiBridge.ts`) emit on the bus. `attachUiBridge` forwards `player:levelUp`/`player:died` into zustand. "Try again" bumps `useGameStore.runId`, and `GameCanvas`'s effect (deps `[runId]`) ends and restarts the run without recreating the WebGL context. Systems never import systems: shared helpers live in `upgrades/levelUp.ts` and `upgrades/satellites.ts`.
+- **Consequences:** No React state in the sim. Restarts are instant. Picker and game-over logic are testable headless.
+
+### ADR-027: Run flags and a debug hook in production builds
+2026-10-23 · Accepted
+- **Decision:** `/play` reads `?seed=N`, `?god`, `?stress=bullets` and `?debug`. `?debug` assigns `window.__AXIOM__ = runtime` for console and Playwright inspection. It only happens when requested, and the game is single-player and holds no secrets.
+- **Consequences:** Reproducible perf runs and scripted browser tests (level-up, damage, game over) without test-only builds.
+
+### ADR-028: Rendering pools for combat
+2026-10-23 · Accepted
+- **Decision:** Enemies get one `InstancedMesh` per mesh kind (capsule, box, wedge) with per-instance `aTint`, `aFlash`, `aErase` and `aSeed` attributes on the dissolve shader. Bullets are camera-facing sprites (billboarded in the vertex shader from the instance translation) in a single draw call, with a warm HDR core, ember body and dark rim. XP orbs are violet instanced octahedra.
+- **Consequences:** The combat scene draws in about 25 calls regardless of counts (61.5k triangles at stress).
+
+### ADR-029: The loop stops mid-frame when a tick pauses it
+2026-10-23 · Accepted
+- **Decision:** `GameLoop.frame` checks the pause mask before each substep. A level-up or death that pauses the store mid-tick no longer lets the remaining substeps of that frame run.
+

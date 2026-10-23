@@ -2,7 +2,7 @@
 
 An infinite 3D "god mode" bullet hell that runs in the browser. You play **The Unbound**, a researcher who was disintegrated in a quantum containment failure and came back as a luminous being. You erase everything the world sends at you, and the world keeps escalating forever: police → SWAT → army → armor → air → secret societies → aliens → heroes → the Demiurge → cosmic entities → a new Cycle with harder scaling.
 
-**Status:** Phases 1–2 are done: scaffold plus the Unbound (movement, aura, Erasure Beam with dissolve, HUD, procedural audio) against sandbox dummies. Next is Phase 3 (combat loop). See [docs/ROADMAP.md](docs/ROADMAP.md).
+**Status:** Phases 1–3 are done: scaffold, the Unbound's powers, and the combat loop (bullet pool, spatial hash, 4 emitters, police + SWAT, WaveDirector v1, XP/level-up with 8 buffs, game over). The next step is the user's review; see the ROADMAP backlog. See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Stack
 - Next.js (App Router, latest) + TypeScript `strict` + Tailwind (HUD/UI only), **npm**
@@ -22,7 +22,7 @@ npm run lint
 npm run typecheck    # tsc --noEmit
 npm run test         # vitest run (npm run test:watch for watch mode)
 ```
-Debug URL params on `/play`: `?seed=N` pins the run seed. In game, F3 toggles the debug overlay and Esc pauses.
+Debug URL params on `/play`: `?seed=N` pins the run seed, `?god` makes the player invulnerable, `?stress=bullets` runs the perf stress scene, and `?debug` exposes `window.__AXIOM__`. In game, F3 toggles the debug overlay and Esc pauses.
 
 ## Folder map
 ```

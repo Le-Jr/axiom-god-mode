@@ -7,32 +7,47 @@ import { BeamState, Erasing, Player, Target, Transform, type PlayerData } from '
 
 const EMPTY = {} as Record<string, never>;
 let targets: Query;
+// Scratch for pierce: hits along the ray, sorted by distance (insertion sort, small n).
+let hitT = new Float32Array(0);
+let hitE = new Int32Array(0);
 
 function enter(p: PlayerData, state: BeamState): void {
   p.beamState = state;
   p.beamTimer = 0;
 }
 
-/** Finds the first target along the aim ray; updates beam length. Returns the entity or -1. */
+/**
+ * Traces the aim ray. Returns how many of the sorted hits (in `hitE`) the beam damages:
+ * 1 + pierce, capped by the hits found. Updates the visual length (ends at the last damaged
+ * target when the beam is stopped, else full range).
+ */
 function traceBeam(ctx: GameContext, p: PlayerData, ox: number, oz: number): number {
-  const { world, config } = ctx;
-  const halfWidth = config.beam.width / 2;
-  let best = -1;
-  let bestT: number = config.beam.range;
+  const { world, config, stats } = ctx;
+  const range: number = config.beam.range;
+  const halfWidth = stats.beamWidth / 2;
+  let count = 0;
   const n = targets.collect();
   for (let i = 0; i < n; i++) {
     const te = targets.results[i];
     if (world.has(te, Erasing)) continue;
     const pos = world.get(te, Transform);
-    const hit = rayCircle(ox, oz, p.aimDirX, p.aimDirZ, config.beam.range, halfWidth, pos.x, pos.z, world.get(te, Target).radius);
-    if (hit >= 0 && hit < bestT) {
-      bestT = hit;
-      best = te;
+    const t = rayCircle(ox, oz, p.aimDirX, p.aimDirZ, range, halfWidth, pos.x, pos.z, world.get(te, Target).radius);
+    if (t < 0) continue;
+    let j = count++;
+    while (j > 0 && hitT[j - 1] > t) {
+      hitT[j] = hitT[j - 1];
+      hitE[j] = hitE[j - 1];
+      j--;
     }
+    hitT[j] = t;
+    hitE[j] = te;
   }
-  p.beamLength = bestT;
-  p.beamHit = best !== -1;
-  return best;
+  const allowed = stats.beamPierce === Infinity ? count : Math.min(count, 1 + stats.beamPierce);
+  p.beamHit = allowed > 0;
+  // Stopped when every allowed slot was used (pierce exhausted); otherwise it reaches full range.
+  const stopped = stats.beamPierce !== Infinity && allowed === 1 + stats.beamPierce;
+  p.beamLength = stopped ? hitT[allowed - 1] : range;
+  return allowed;
 }
 
 /**
@@ -44,9 +59,11 @@ export const beamSystem: System = {
   phase: 'player',
   init(ctx) {
     targets = ctx.world.query(Target, Transform);
+    hitT = new Float32Array(ctx.config.performance.maxEntities);
+    hitE = new Int32Array(ctx.config.performance.maxEntities);
   },
   update(ctx, dt) {
-    const { world, config, input, bus } = ctx;
+    const { world, config, input, bus, stats } = ctx;
     const e = ctx.player;
     if (e < 0 || !world.isAlive(e)) return;
     const cfg = config.beam;
@@ -82,8 +99,9 @@ export const beamSystem: System = {
     }
 
     if (p.beamState === BeamState.channel) {
-      const hit = traceBeam(ctx, p, t.x, t.z);
-      if (hit !== -1) ctx.hits.push(hit, cfg.erasureRate * step, HitKind.beam);
+      const hits = traceBeam(ctx, p, t.x, t.z);
+      const amount = cfg.erasureRate * step;
+      for (let i = 0; i < hits; i++) ctx.hits.push(hitE[i], amount, HitKind.beam);
       p.energy -= cfg.drainPerSecond * step;
       p.sinceDrain = 0;
       if (p.energy <= 0) {
@@ -97,7 +115,7 @@ export const beamSystem: System = {
       if (p.beamState !== BeamState.idle) traceBeam(ctx, p, t.x, t.z); // visual length only
       p.sinceDrain += step;
       if (p.sinceDrain >= cfg.rechargeDelay && p.energy < p.maxEnergy) {
-        p.energy = Math.min(p.maxEnergy, p.energy + cfg.rechargePerSecond * step);
+        p.energy = Math.min(p.maxEnergy, p.energy + stats.beamRecharge * step);
       }
       if (p.lockedOut && p.energy >= cfg.minEnergyToFire) p.lockedOut = false;
     }
