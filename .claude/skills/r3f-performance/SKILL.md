@@ -22,6 +22,7 @@ The simulation owns state. Rendering only copies it into three.js objects. Budge
 - File: `src/game/rendering/pools/<Kind>Pool.tsx`. Shaders go in `src/game/rendering/shaders/` (see the `shader-vfx` skill).
 - Scratch objects live at module level: `const _m = new Matrix4(), _p = new Vector3(), _q = new Quaternion(), _s = new Vector3(1,1,1)`.
 - `useFrame((state, dt) => ..., priority)`. Priorities: −1000 DebugProbe reset → −100 LoopDriver (sim) → 0 render pools → 1 EffectComposer → 10 DebugProbe read. Never use another positive priority (it changes who renders).
+- Inside `useFrame`, mutate materials/geometries **through the mesh ref** (`(ref.current.material as ShaderMaterial).uniforms...`, `ref.current.geometry.getAttribute(...)`), never through the `useMemo` variable: the React Compiler lint rule `react-hooks/immutability` rejects mutating memoized values after render.
 - Use the `state` argument of `useFrame` (`state.camera`, `state.gl`), not values captured from `useThree`, when mutating three.js objects.
 - Canvas (`src/game/GameCanvas.tsx`): `flat`, `gl={{ antialias: false, powerPreference: 'high-performance', stencil: false }}`, `dpr={[1, quality.maxDpr]}`. Add new scene content as children there.
 - Read the quality preset from `config/rendering.ts`, never hardcode it.

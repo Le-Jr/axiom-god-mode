@@ -21,14 +21,14 @@
 - [x] `npm run build` / `lint` / `typecheck` / `test` green; commit
 
 ## Phase 2: Player and powers
-- [ ] The Unbound body shader (placeholder)
-- [ ] Input snapshot, WASD movement, cursor ground ray, camera follow
-- [ ] Aura system + ground ring shader + pulse
-- [ ] Erasure Beam: charge/channel/tail, energy resource, ray collision
-- [ ] Erasure dissolve effect (freeze → flatten/glitch → vanish) on test dummies
-- [ ] HUD: HP and energy bars via the HUD bridge
-- [ ] Procedural audio placeholders: aura hum, beam, erase tear
-- [ ] Docs synced; devlog; commit
+- [x] The Unbound body shader (placeholder)
+- [x] Input snapshot, WASD movement, cursor ground ray, camera follow
+- [x] Aura system + ground ring shader + pulse
+- [x] Erasure Beam: charge/channel/tail, energy resource, ray collision
+- [x] Erasure dissolve effect (freeze → flatten/glitch → vanish) on test dummies
+- [x] HUD: HP and energy bars via the HUD bridge
+- [x] Procedural audio placeholders: aura hum, beam, erase tear
+- [x] Docs synced; devlog; commit
 
 ## Phase 3: Combat loop
 - [ ] SoA ProjectilePool + instanced bullet renderer

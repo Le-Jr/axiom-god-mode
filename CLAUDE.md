@@ -2,7 +2,7 @@
 
 An infinite 3D "god mode" bullet hell that runs in the browser. You play **The Unbound**, a researcher who was disintegrated in a quantum containment failure and came back as a luminous being. You erase everything the world sends at you, and the world keeps escalating forever: police → SWAT → army → armor → air → secret societies → aliens → heroes → the Demiurge → cosmic entities → a new Cycle with harder scaling.
 
-**Status:** Phase 1 (scaffold) is done: menu, `/play`, fixed-timestep loop, ECS, stores, an empty scene with postprocessing, and the F3 overlay. Next is Phase 2 (player and powers). See [docs/ROADMAP.md](docs/ROADMAP.md).
+**Status:** Phases 1–2 are done: scaffold plus the Unbound (movement, aura, Erasure Beam with dissolve, HUD, procedural audio) against sandbox dummies. Next is Phase 3 (combat loop). See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Stack
 - Next.js (App Router, latest) + TypeScript `strict` + Tailwind (HUD/UI only), **npm**

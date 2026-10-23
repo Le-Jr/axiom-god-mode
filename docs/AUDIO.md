@@ -74,6 +74,10 @@ Until real stems exist, `audio/procedural/` synthesizes each stem live with osci
 - Files: `public/assets/audio/sfx/<id>[_<n>].ogg`. Multiple numbered files are round-robined. A missing file falls back to a procedural synth recipe in `audio/sfxRecipes.ts`.
 - Registry: `audio/sfxRegistry.ts` (id → files, volume, pitchVar, volVar, maxVoices, priority, spatial, bus).
 
+### Implemented (Phase 2)
+All procedural (`audio/sfxRecipes.ts`); registry in `audio/sfxRegistry.ts`; event mapping in `audio/listeners.ts` (attached per run by `GameCanvas`):
+`aura_hum` (loop, pitch rises with level), `aura_pulse`, `beam_charge`, `beam_loop` (loop while channeling), `beam_tail`, `beam_empty`, `erase_tear` (spatial), `explosion_s` (spatial, aura kills). Voice counts per id are released by a timer after each recipe's duration. Pause ducks the sfx and music buses. File loading (`files` in the registry) is not wired yet; every id falls back to its recipe.
+
 ## Mixing rules
 - Voice limiting per id: when full, steal the oldest voice of the same id. Low-priority sounds are dropped rather than stolen when the global voice count exceeds 48.
 - Spatial: `PannerNode` (equalpower, inverse rolloff, refDistance 8). The listener follows the camera target (the player), not the camera.

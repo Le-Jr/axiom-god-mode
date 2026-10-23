@@ -133,3 +133,22 @@ Format: `ADR-NNN — Title` · date · status (Accepted / Superseded by ADR-x / 
 - **Decision:** Next 16.4.3 (Turbopack), React 19.3, three 0.186, R3F 9.8, drei 10.7, @react-three/postprocessing 3.2 + postprocessing 6.39, zustand 5, Tailwind 4 (via `@tailwindcss/turbopack`), TypeScript 5.9 (not 7.x; Next's type-check pipeline uses the TS JS API), ESLint 9 (`eslint-config-next` flat config), Vitest 5 with native `resolve.tsconfigPaths`.
 - **Consequences:** R3F 9.8 peer-limits React to `<19.4`, so upgrade React only together with R3F. R3F still uses the deprecated `THREE.Clock`, which logs a console warning that is harmless and not ours.
 
+### ADR-020: Hit buffer between producers and the damage system; beam kills erase, other kills destroy
+2026-10-23 · Accepted
+- **Decision:** All damage goes through `ctx.hits` (a preallocated SoA `HitBuffer`: target, amount, kind). The `damage` system drains it once per tick. `HitKind.beam` kills add the `Erasing` component (no debris; `erasureSystem` destroys the entity after freeze + flatten + vanish), while other kinds emit `enemy:killed` and destroy at once. Targets keep a `flash` timer for hit feedback.
+- **Consequences:** One place for HP rules (i-frames, heavy hits and Cycle damage multipliers go here in Phase 3). Order-independent producers.
+
+### ADR-021: Procedural audio first, voice accounting by timer
+2026-10-23 · Accepted
+- **Decision:** Every SFX id has a Web Audio recipe. Loops (aura hum, beam) are long-lived handles. Voice limits per id and globally are tracked with counters that a `setTimeout` releases after the recipe duration. Spatial sounds use a `PannerNode` positioned relative to the player. The AudioContext is created when `/play` mounts (sticky user activation from the menu click) and resumed on the first gesture as a fallback.
+- **Consequences:** The game is never silent with zero assets. One-shot nodes are created per play (inherent to Web Audio). This is acceptable because plays are event-rate, not per-tick.
+
+### ADR-022: Sandbox dummies until the WaveDirector exists
+2026-10-23 · Accepted
+- **Decision:** `sandboxSystem` (director phase, `config/sandbox.ts`) keeps 16 static, erasable `Target` dummies around the player. It is disabled once the Phase 3 director lands.
+
+### ADR-023: Mutate three.js objects through refs inside `useFrame`
+2026-10-23 · Accepted
+- **Context:** `eslint-config-next` 16 ships the React Compiler rule `react-hooks/immutability`, which rejects mutating `useMemo` values after render.
+- **Decision:** Create materials and geometries with `useMemo` (for disposal), but inside `useFrame` reach them through the mesh ref (`ref.current.material`, `ref.current.geometry`). Documented in the `r3f-performance` skill.
+

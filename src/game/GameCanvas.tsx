@@ -1,13 +1,18 @@
 'use client';
 import { Canvas } from '@react-three/fiber';
 import { useEffect } from 'react';
+import { attachAudio } from '@/game/audio/listeners';
 import { config } from '@/game/config';
 import { endRun, startRun } from '@/game/core/runtime';
 import { CameraRig, initialCameraPosition } from '@/game/rendering/CameraRig';
 import { DebugProbe } from '@/game/rendering/DebugProbe';
+import { InputBinder } from '@/game/rendering/InputBinder';
 import { LoopDriver } from '@/game/rendering/LoopDriver';
+import { AuraRing } from '@/game/rendering/player/AuraRing';
+import { ErasureBeam } from '@/game/rendering/player/ErasureBeam';
+import { UnboundBody } from '@/game/rendering/player/UnboundBody';
+import { TargetPool } from '@/game/rendering/pools/TargetPool';
 import { PostFX } from '@/game/rendering/PostFX';
-import { Beacon } from '@/game/rendering/world/Beacon';
 import { Environment } from '@/game/rendering/world/Environment';
 import { Ruins } from '@/game/rendering/world/Ruins';
 import { useGameStore } from '@/store/useGameStore';
@@ -27,8 +32,8 @@ export default function GameCanvas() {
 
   useEffect(() => {
     const loop = startRun(readSeedParam());
-    const game = useGameStore.getState();
-    game.beginRun();
+    const detachAudio = attachAudio(loop.ctx);
+    useGameStore.getState().beginRun();
 
     // Store phase (low frequency) → loop pause state.
     const unsubscribe = useGameStore.subscribe((s, prev) => {
@@ -42,6 +47,7 @@ export default function GameCanvas() {
     return () => {
       unsubscribe();
       document.removeEventListener('visibilitychange', onVisibility);
+      detachAudio();
       endRun();
       useGameStore.getState().setPhase('menu');
     };
@@ -57,11 +63,15 @@ export default function GameCanvas() {
         gl.info.autoReset = false; // DebugProbe resets once per frame (multi-pass totals)
       }}
     >
+      <InputBinder />
       <LoopDriver />
       <CameraRig />
       <Environment />
       <Ruins />
-      <Beacon />
+      <TargetPool />
+      <AuraRing />
+      <UnboundBody />
+      <ErasureBeam />
       <PostFX preset={preset} />
       <DebugProbe />
     </Canvas>

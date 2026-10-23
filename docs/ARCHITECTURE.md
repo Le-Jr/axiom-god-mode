@@ -61,7 +61,10 @@ export interface System {
   dispose?(ctx: GameContext): void;
 }
 ```
-- Systems are registered in order in `game/systems/index.ts`. `GameContext = { world, bus, time, rng, config, pools, input, grid }`.
+- Systems are registered in order in `game/systems/index.ts`. `GameContext = { config, world, bus, time, rng, view, hud, debug, input, hits, player, cycle }`. Phase 3 adds `projectiles` and `grid`.
+- **Input:** DOM listeners (`rendering/InputBinder.tsx`) write `rawInput` through the `config/input.ts` action map. The same component projects the cursor onto the ground plane each frame (useFrame −200, before the sim). The `input` system copies `rawInput` into `ctx.input` once per tick.
+- **Damage pipeline:** producers (aura, beam, later bullets) push into `ctx.hits` (`HitBuffer`, preallocated SoA). The `damage` system drains it. A kill by the **beam** adds `Erasing` (dissolve, then `erasure` destroys it). A kill by anything else emits `enemy:killed` and destroys immediately.
+- **Render reads:** player components call `readPlayerView(runtime.ctx)` (interpolated pose plus the `Player` component) once per useFrame.
 
 **Projectiles are not ECS entities.** `entities/projectiles/ProjectilePool.ts` is SoA (`Float32Array` for x, z, vx, vz, radius, damage, life, age, param0..3 and `Uint8Array` for kind and flags) with a free list. Capacity comes from `config/performance.ts` (default 4096). Fragments and particles follow the same pattern.
 
@@ -94,6 +97,8 @@ Typed and synchronous, with listeners kept in arrays per type. Payload objects f
 | `tier:changed` | tierId, cycle | director | music, UI banner |
 | `boss:spawned` / `boss:defeated` | bossId | director/damage | music, UI |
 | `cycle:started` | cycle | director | UI, music, postFX |
+| `telegraph:spawn` | kind, x, z, duration | emitters | VFX, audio |
+| `cutscene:done` | id, skipped | cutscene player | run start |
 
 The authoritative list is `game/core/events.ts`. Keep this table in sync with it.
 

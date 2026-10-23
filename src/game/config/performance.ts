@@ -11,4 +11,5 @@ export const performance = {
   fragmentSoftCap: 1500,
   xpOrbs: 512,
   audioVoices: 48,
+  hitsPerTick: 8192, // damage events buffered between collision and damage phases
 } as const;

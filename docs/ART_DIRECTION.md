@@ -53,7 +53,7 @@ Order: Bloom → ChromaticAberration → Glitch/Noise (conditional) → Vignette
 
 ## UI / HUD
 - Use the `frontend-design` skill. HUD elements sit at screen edges and never cover the central 60%.
-- HP bar (bottom-left, cyan → red at low HP), energy bar (beside it), XP bar (thin line at the top), timer + tier + Cycle (top-center), level (top-left).
+- HP bar labeled **Form** (bottom-left, cyan → ember at low HP), energy bar (beside it), XP bar (thin line at the top), timer + tier + Cycle (top-center), level (top-left).
 - Upgrade picker: 3 cards, rarity color frame, icon, name, effect text, stacks owned. Keys 1/2/3.
 - **Typefaces** (both are SIL OFL, loaded with `next/font/google`):
   - **Unbounded** for titles, the logo, boss names and tier banners. It is wide and geometric, and its name happens to fit the project.

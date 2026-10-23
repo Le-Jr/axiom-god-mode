@@ -5,6 +5,8 @@ export const hudBridge = {
   maxHp: 0,
   energy: 0,
   maxEnergy: 0,
+  energyLocked: false,
+  lowHp: false,
   xp: 0,
   xpToNext: 0,
   level: 1,
