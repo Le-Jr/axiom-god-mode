@@ -55,7 +55,12 @@ Order: Bloom → ChromaticAberration → Glitch/Noise (conditional) → Vignette
 - Use the `frontend-design` skill. HUD elements sit at screen edges and never cover the central 60%.
 - HP bar (bottom-left, cyan → red at low HP), energy bar (beside it), XP bar (thin line at the top), timer + tier + Cycle (top-center), level (top-left).
 - Upgrade picker: 3 cards, rarity color frame, icon, name, effect text, stacks owned. Keys 1/2/3.
-- `TODO(decision)` Typeface choice for UI and titles.
+- **Typefaces** (both are SIL OFL, loaded with `next/font/google`):
+  - **Unbounded** for titles, the logo, boss names and tier banners. It is wide and geometric, and its name happens to fit the project.
+  - **Chakra Petch** for HUD numbers, labels and buff text. It is technical and angular, and readable at small sizes.
+
+## Cycle tint
+Each Cycle rotates the hue of the *world* tokens (`void`, `ash`, `concrete`, fog) by `+40°` (`config/rendering.ts → cycleHueStep`), at low saturation. Cycle 0 is cold blue-gray, Cycle 1 drifts toward teal, Cycle 2 toward dusk violet, and so on. Player tokens, enemy bullet tokens and telegraph tokens are **never** tinted.
 
 ## Placeholders policy
 Until final assets exist: primitives + shaders only (no textures needed). Enemies are colored low-poly shapes per faction (capsule officers, box vehicles, wedge jets, torus aliens). Placeholder cutscene panels are generated gradient-and-silhouette images or SVGs.

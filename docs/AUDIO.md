@@ -26,7 +26,7 @@ Music stems ─► musicBus (Gain) ┘
 | `choir` | choir, high brass | ≥ 0.85 or boss |
 
 ### File spec
-- Path: `public/assets/audio/music/<trackId>/<trackId>_<stemId>.ogg` (plus a `.m4a` fallback). `TODO(decision)` Is Safari support required? If so, ship m4a as well.
+- Path: `public/assets/audio/music/<trackId>/<trackId>_<stemId>.ogg` plus a `.m4a` (AAC) fallback. Safari is a supported target, so the loader picks the format via `canPlayType`.
 - 48 kHz, stereo, OGG Vorbis q6 (around 192 kbps). All stems of a track have **identical length**, start on the downbeat and loop seamlessly with no tail. Bake reverb tails into the loop start.
 - The manifest `public/assets/audio/music/<trackId>/track.json`:
 ```json
@@ -34,7 +34,8 @@ Music stems ─► musicBus (Gain) ┘
   "loopStart": 0, "loopEnd": 64.0,
   "stems": ["ambient", "perc", "orch", "guitar", "choir"] }
 ```
-- Planned tracks: `menu`, `facility` (tiers 1–3), `war` (4–5), `occult` (6–7), `ascension` (8–9), `cosmic` (10), plus a `boss_*` per boss. `TODO(decision)` Sourcing: commissioned, self-made or licensed?
+- Planned tracks: `menu`, `facility` (tiers 1–3), `war` (4–5), `occult` (6–7), `ascension` (8–9), `cosmic` (10), plus a `boss_*` per boss.
+- **Sourcing:** procedural placeholders ship first. Final stems are self-produced or commissioned with a **work-for-hire / commercial license**. Stock music is used only with a license that permits commercial use and redistribution in a web game. Every file is recorded in `public/assets/CREDITS.md`. AI-generated music is not used without a clear commercial license.
 
 ### Intensity mapping
 Recomputed at 10 Hz, smoothed (attack 0.5 s, release 3 s):

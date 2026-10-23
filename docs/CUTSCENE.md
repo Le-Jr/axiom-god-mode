@@ -1,6 +1,6 @@
 # Intro cutscene
 
-A data-driven panel player (`src/game/cutscene/`) shows static illustrated panels with typewriter captions and subtle parallax/zoom. **Space, Esc or click skips the whole cutscene**. `TODO(decision)` Should click advance one panel and a hold skip everything instead?
+A data-driven panel player (`src/game/cutscene/`) shows static illustrated panels with typewriter captions and subtle parallax/zoom. **A click advances**: it finishes the typewriter, then moves to the next panel. **Space or Esc skips the whole cutscene.** A "Space: skip" hint fades in after 1 s.
 
 ## Script: `public/assets/cutscene/intro.json`
 | # | Beat | Image (placeholder) | Caption | Motion | Audio |
@@ -13,7 +13,7 @@ A data-driven panel player (`src/game/cutscene/`) shows static illustrated panel
 | 6 | Reassembly | Lattice lines converge into a humanoid form of light | "Something remembered my shape." | zoom-out 1.1→1.0 | choir swell begins |
 | 7 | Awakening | The Unbound hovering in the ruined lab, debris suspended, sirens outside | "And it was no longer mine to lose." | slow push-in, parallax layers | music hit → crossfade into gameplay ambient |
 
-`TODO(decision)` Final caption copy, plus whether the voice is first-person (as above) or a narrator. Placeholder art: generated gradients and silhouettes (see ART_DIRECTION).
+**Voice:** first person, as above. These are Dr. Aren Vael's last and first thoughts. The captions above are the v1 copy. Placeholder art is generated gradients and silhouettes (see ART_DIRECTION). The same player renders the one-panel **memory fragments** shown at each Cycle transition (`public/assets/cutscene/fragments/*.json`).
 
 ## JSON schema
 ```ts

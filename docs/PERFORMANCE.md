@@ -1,6 +1,6 @@
 # Performance
 
-**Target:** 60 FPS with **2,000+ active enemy bullets** on a mid-range laptop (reference: integrated or entry GPU of the Intel Iris Xe / Apple M1 / GTX 1650 class, Chrome stable, 1080p, DPR capped at 1.5). `TODO(decision)` Pin one physical reference machine.
+**Target:** 60 FPS with **2,000+ active enemy bullets** on a mid-range laptop The **reference machine** is a laptop with an Intel Core i5-1135G7 and Iris Xe integrated graphics, 16 GB RAM, Chrome stable, a 1080p display and DPR capped at 1.5. It is the weakest common "mid-range" target. If that hardware isn't available, the closest machine on hand is used and noted in DEVLOG.
 
 ## Budgets (per frame at 60 FPS = 16.6 ms)
 | Item | Budget |

@@ -2,7 +2,7 @@
 
 An infinite 3D "god mode" bullet hell that runs in the browser. You play **The Unbound**, a researcher who was disintegrated in a quantum containment failure and came back as a luminous being. You erase everything the world sends at you, and the world keeps escalating forever: police → SWAT → army → armor → air → secret societies → aliens → heroes → the Demiurge → cosmic entities → a new Cycle with harder scaling.
 
-**Status:** Phase 0 (knowledge base) is done. No game code exists yet. See [docs/ROADMAP.md](docs/ROADMAP.md).
+**Status:** Phase 0 (knowledge base) is approved, and all design decisions are recorded in ADR-012. No game code exists yet. See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Stack
 - Next.js (App Router, latest) + TypeScript `strict` + Tailwind (HUD/UI only), **pnpm**

@@ -58,8 +58,45 @@ Format: `ADR-NNN — Title` · date · status (Accepted / Superseded by ADR-x / 
 - **Installed into `.claude/skills/`** (copied from anthropics/skills; Apache-2.0; SKILL.md and scripts reviewed):
   - `frontend-design`: distinctive menu, HUD and upgrade-picker design. Instructions only, no scripts.
   - `webapp-testing`: Playwright-driven screenshots and console capture of the running game. Contains `scripts/with_server.py` (starts the given server command, waits for the port, runs a command; no network or other side effects) and example scripts. Requires Python + Playwright locally.
-- **Skipped:** `algorithmic-art`, `canvas-design`, `theme-factory`, `web-artifacts-builder` (aimed at standalone artifacts, not a Next.js game), `docx/pdf/pptx/xlsx`, `brand-guidelines` (Anthropic's brand), `internal-comms`, `slack-gif-creator`, `mcp-builder`, `claude-api`, `doc-coauthoring`, `skill-creator` (useful but available globally as a plugin skill; not needed in-repo). Marketplace plugins: `typescript-lsp` and `playwright` look useful but are user-level plugins, so they were left for the user to opt into rather than auto-installed. `TODO(decision)`
+- **Skipped:** `algorithmic-art`, `canvas-design`, `theme-factory`, `web-artifacts-builder` (aimed at standalone artifacts, not a Next.js game), `docx/pdf/pptx/xlsx`, `brand-guidelines` (Anthropic's brand), `internal-comms`, `slack-gif-creator`, `mcp-builder`, `claude-api`, `doc-coauthoring`, `skill-creator` (useful but available globally as a plugin skill; not needed in-repo). Marketplace plugins: `typescript-lsp` and `playwright` look useful but are user-level plugins, so they were left for the user to opt into rather than auto-installed. This was confirmed in ADR-012: the repo stays self-contained, and contributors may install those plugins individually.
 
 ### ADR-011: Package manager is pnpm
 2026-10-23 · Accepted
 - **Note:** On this machine, corepack failed to fetch pnpm 12.15.0 (`Cannot find module .../pnpm.cjs`). Phase 1 must fix this first (e.g. `corepack enable && corepack prepare pnpm@latest --activate`, or `npm i -g pnpm`) and pin `packageManager` in `package.json`.
+
+### ADR-012: Resolution of the Phase 0 open design questions
+2026-10-23 · Accepted
+- **Context:** Phase 0 left 24 `TODO(decision)` items. The user delegated them: "decide whatever makes the most sense for the project".
+- **Decision:** guided by three priorities: readability of the bullet hell, a power fantasy without frustration, and a small v1 scope.
+  | Area | Decision |
+  |---|---|
+  | Beam resource | Energy pool; re-arm at 25% after emptying (no heat gauge) |
+  | Beam vs. props | The beam erases props (no debris); the aura destroys them (fragments) |
+  | HP | No passive regen; no i-frames for chip damage; 0.5 s i-frames after telegraphed heavy hits |
+  | XP | Physical orbs, merged above the soft cap |
+  | Picker | 1 reroll at start, +1 per 10 levels (max 3); pity after 4 all-Common offers; no banish or skip in v1 |
+  | Synergies | Auto-activate with a toast and HUD icon; cards show "completes: X" |
+  | Typefaces | Unbounded (titles) + Chakra Petch (HUD), both OFL |
+  | Reference machine | i5-1135G7 / Iris Xe, 16 GB, Chrome, 1080p, DPR 1.5 |
+  | Victory | None. A "Transcendence" interstitial at the end of Cycle 1; best Cycle recorded |
+  | Platform | Desktop KB+M on the latest Chrome/Edge/Firefox/Safari; gamepad in the backlog; no mobile |
+  | Rebinding | Action map from day one, UI later; right mouse reserved |
+  | Story | Researcher Dr. Aren Vael; one memory fragment panel per Cycle transition |
+  | Mini-bosses | SWAT: Breach Captain; army: Siege Colonel |
+  | Boss fights | Regular spawns continue at 40% budget |
+  | Air units | The aura deals 50% damage to them; the beam deals full damage |
+  | Heroes | Boss team "the Meridian Compact": Rhune, Velt, Moraine, Tessaly; regular units are generic augments |
+  | Demiurge | No control inversion; axioms change the world, never the input |
+  | Cycle bosses | +1 phase per Cycle, capped at +2 |
+  | Cycle palette | World hue rotates 40° per Cycle; player and bullet colors fixed |
+  | Biomes | facility → city → occult district → fractured reality |
+  | Meta-progression | None in v1; local records only; online leaderboard in the backlog |
+  | Cutscene | First-person captions; click advances, Space/Esc skips |
+  | Audio formats | .ogg + .m4a fallback (Safari supported) |
+  | Music sourcing | Procedural first; final stems self-produced or commissioned under a commercial license, recorded in CREDITS.md |
+  | Plugins | No user-level plugins required; the repo stays self-contained |
+- **Consequences:** The docs now carry these answers in place of the markers. New values (`beam.minEnergyToFire`, `director.bossBudgetScale`, `aura.airDamageScale`, `upgrades.pityAfter`, `rendering.cycleHueStep`) must be created in `config/` during the relevant phase.
+
+### ADR-013: GitHub remote
+2026-10-23 · Accepted
+- **Decision:** The canonical repository is `https://github.com/Le-Jr/axiom-god-mode` (remote `origin`, branch `main`).

@@ -5,7 +5,8 @@
 - [x] Official skills installed (frontend-design, webapp-testing)
 - [x] Project skills created (9)
 - [x] `.claude/settings.json` permissions
-- [ ] User approval of Phase 0 and resolution of the blocking `TODO(decision)` items
+- [x] User approval of Phase 0; all `TODO(decision)` items resolved (ADR-012)
+- [x] Styled README and push to GitHub
 
 ## Phase 1: Scaffold
 - [ ] Next.js (App Router) + TS strict + Tailwind + ESLint, with pnpm
@@ -55,4 +56,7 @@
 - [ ] Pause menu, settings (volumes, quality, reduced motion)
 - [ ] 30-minute soak test (memory flat)
 - [ ] Quality presets and auto-detect
-- [ ] `TODO(decision)` Meta-progression, high scores, gamepad, mobile
+- [ ] Local records (best time, best Cycle, most erasures)
+- [ ] Memory fragments at Cycle transitions
+- [ ] Rerolls and pity timer in the upgrade picker
+- [ ] Later: gamepad, key rebinding UI, banish, online leaderboard (mobile is out of scope)

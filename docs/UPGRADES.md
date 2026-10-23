@@ -12,7 +12,8 @@ The source of truth is `src/game/upgrades/defs/*.ts`. Add buffs with the `upgrad
 
 - Weights scale with luck (`luck` stat, future) and with Cycle: `+cycle.rarityShift` moves weight from Common up to higher tiers.
 - Each roll offers 3 **distinct** buffs. Maxed and `unique` buffs that are already owned are excluded. Unmet prerequisites exclude the buff.
-- `TODO(decision)` Pity timer (guaranteed Rare or better after N Commons)?
+- **Pity timer:** after 4 consecutive offers with only Commons, the next offer guarantees at least one Rare or better (`upgrades.pityAfter`).
+- **Rerolls:** start with 1, +1 every 10 levels, max 3 stored (see GDD §5.6).
 
 ## Stacking modes
 | Mode | Meaning |
@@ -59,7 +60,7 @@ A synergy is a passive bonus that activates automatically when every listed buff
 | Choir of Echoes | `clone`≥2 + `beam_multiray` | clones inherit multiray |
 | Phase Step | `blink` + `time_dilation` | blink leaves a 2 s dilation field |
 
-`TODO(decision)` Do synergies appear as explicit picker cards, or only activate silently? Default plan: silent activation plus a toast and an icon in the HUD.
+**Synergies activate automatically**, with no picker card. Activation shows a toast and adds an icon to the HUD. A buff card that would *complete* a synergy shows a small "completes: <Synergy>" hint, so players can build toward them.
 
 ## Template for a new buff
 ```ts

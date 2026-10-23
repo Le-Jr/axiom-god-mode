@@ -8,8 +8,8 @@ HP values are in player-damage units. The base beam erases around 300 HP/s, and 
 | # | Tier id | Unlock (time AND level) | Boss on entry | Spawn budget weight |
 |---|---|---|---|---|
 | 1 | `police` | 0:00, L1 | — | 1.0 |
-| 2 | `swat` | 1:30, L4 | `TODO(decision)` mini-boss? | 1.3 |
-| 3 | `army` | 3:30, L8 | — `TODO(decision)` | 1.7 |
+| 2 | `swat` | 1:30, L4 | *mini-boss* **Breach Captain** | 1.3 |
+| 3 | `army` | 3:30, L8 | *mini-boss* **Siege Colonel** | 1.7 |
 | 4 | `armor` | 5:30, L12 | **Tank Commander** | 2.2 |
 | 5 | `air` | 7:30, L16 | **Squadron Leader** | 2.8 |
 | 6 | `society` | 10:00, L20 | **Grand Master** | 3.5 |
@@ -20,7 +20,8 @@ HP values are in player-damage units. The base beam erases around 300 HP/s, and 
 
 - Earlier tiers stay in the mix with decaying weight (`tierDecay`), so the screen escalates rather than swapping out.
 - If the player's level lags behind the clock, the next tier waits, while the budget still grows inside the current tier.
-- A boss spawns when its tier unlocks. The tier's regular units start once the boss enters, not after it dies. `TODO(decision)` Should regular spawns pause during the boss fight?
+- A boss spawns when its tier unlocks. The tier's regular units start once the boss enters, not after it dies. **During a boss fight, regular spawns continue at 40% budget** (`director.bossBudgetScale`), which keeps XP flowing without burying the boss patterns.
+- Mini-bosses (SWAT, army) teach the boss format early. They have one or two phases and no music change.
 
 ## Pattern vocabulary
 Emitter kinds (implemented in `systems/patterns/`; see the `bullet-pattern` skill): `aimed`, `spread`, `ring`, `spiral`, `homing`, `laser`, `artillery`, `airstrike`, `wave` (sine bullets), `burst` (delayed split).
@@ -42,6 +43,7 @@ Ground-level response. Readable, slow, teaches dodging.
 | Marksman | 100 | 3 | `laser` telegraph 0.8 s → fast `aimed` |
 | Shield Unit | 300, frontal block (beam must flank) | 3.5 | `aimed` pair |
 | Armored Van | 500 | 6 | deploys 4 Breachers |
+| *Mini-boss: Breach Captain* | 4,000 | 4 | `spread` 7 ×3 bursts → at 50% HP adds `laser` marksman shots and calls 2 Vans |
 
 ### 3. Army (`army`)
 | Unit | HP | Speed | Patterns |
@@ -49,6 +51,7 @@ Ground-level response. Readable, slow, teaches dodging.
 | Rifle Squad (5) | 120 each | 4.5 | `aimed` staggered volley |
 | Gunner | 350 | 3 | long `spread` sweep (oscillating angle) |
 | Mortar Team | 250 | 2 | `artillery` 3 markers, 1.2 s fuse |
+| *Mini-boss: Siege Colonel* | 10,000 | 2.5 | command post: `artillery` walking barrage + oscillating `spread` sweep; summons Rifle Squads |
 
 ### 4. Armor (`armor`)
 | Unit | HP | Speed | Patterns |
@@ -58,7 +61,7 @@ Ground-level response. Readable, slow, teaches dodging.
 | **Boss: Tank Commander** | 25,000 | 2 | phases: `spread` 9 → `ring` 24 alternating → `artillery` carpet + summons Light Tanks |
 
 ### 5. Air (`air`)
-Air units render at altitude. Collision stays on the XZ plane via their ground shadow; they can be erased only while over the arena. `TODO(decision)` Should air units only be beam-targetable (immune to the aura)?
+Air units render at altitude. Collision stays on the XZ plane via their ground shadow; they can be erased only while over the arena. **The aura deals 50% damage to air units** (`aura.airDamageScale`) because of altitude, while the beam deals full damage. This rewards aiming without making the aura useless.
 | Unit | HP | Speed | Patterns |
 |---|---|---|---|
 | Attack Helicopter | 900 | 6 | `spiral` 2-arm, strafing |
@@ -84,20 +87,28 @@ Ritualists with geometric and occult (original) patterns.
 | **Boss: Alien Mothership** | 150,000 | 1 | huge hull with destructible weak points; screen-wide `ring` layers, `laser` grid, spawns Drifters |
 
 ### 8. Heroes (`heroes`)
-Original super-powered humans. **Never** model them on existing heroes (see the [IP checklist](ART_DIRECTION.md#ip-originality-checklist)). `TODO(decision)` Final roster names and designs.
+Original super-powered humans. **Never** model them on existing heroes (see the [IP checklist](ART_DIRECTION.md#ip-originality-checklist)). Regular units are rank-and-file "augments". The boss is a named team, **the Meridian Compact**, which passed the IP checklist on names. Re-check the visuals when they are modeled.
 | Unit | HP | Speed | Patterns |
 |---|---|---|---|
-| Vanguard (melee rusher) | 4,000 | 12 dash | shockwave `ring` on landing |
-| Arc Caster | 3,000 | 5 | chained `laser`s |
-| Bulwark | 8,000 | 3 | reflect field (beam is weakened from the front) |
-| **Boss: Hero Team** | 4 × 60,000 | varies | four members with combo patterns; each erased member enrages the others |
+| Dash Augment (melee rusher) | 4,000 | 12 dash | shockwave `ring` on landing |
+| Arc Augment | 3,000 | 5 | chained `laser`s |
+| Ward Augment | 8,000 | 3 | reflect field (beam is weakened from the front) |
+| **Boss: the Meridian Compact** | 4 × 60,000 | varies | four members with combo patterns; each erased member enrages the others |
+
+Meridian Compact roster. Silhouettes are geometric armor shapes with no emblems or capes.
+| Member | Role | Signature |
+|---|---|---|
+| **Rhune** | rusher | chained dashes, each leaving a `ring` shockwave |
+| **Velt** | caster | rotating `laser` triangle + `homing` sparks |
+| **Moraine** | tank | moving reflect wall, `spread` volleys from behind it |
+| **Tessaly** | support | slows the player's beam inside her field, heals the team; erase her first |
 
 ### 9. The Demiurge (`demiurge`)
 The architect of reality's rules. Its attacks *rewrite the arena*: rules invert, the floor tiles shift.
 | Unit | HP | Speed | Patterns |
 |---|---|---|---|
 | Archon Fragment | 6,000 | 4 | geometric `ring` + `spiral` combos |
-| **Boss: The Demiurge** | 500,000 | 0 (arena-scale) | phase-based "axioms": gravity flips (bullets curve), time stutter, mirrored player controls `TODO(decision)` (fun vs. frustration), mega `laser` lattices |
+| **Boss: The Demiurge** | 500,000 | 0 (arena-scale) | phase-based "axioms": gravity flips (bullets curve), time stutter, inverted aura (heals enemies for 3 s, telegraphed), mega `laser` lattices. **No control inversion**: axioms change the world, never the player's input. |
 
 ### 10. Cosmic Entities (`cosmic`)
 Beings beyond geometry. Patterns use the full vocabulary at maximum complexity.
@@ -113,5 +124,5 @@ When the Cosmic Entity is defeated, `cycle += 1` and the ladder restarts at tier
 - **remixes**: each tier slot draws 1 primary faction plus `min(c, 2)` guest factions from *any* tier (seeded RNG). Example: Cycle 1, slot 2 = SWAT + Drifters.
 - **pattern complexity**: emitters add `+c` arms, bullets or speed variants up to the per-emitter caps.
 - shortened unlock times: `unlockTime * cycle.timeCompression ^ c` (start 0.85)
-- bosses gain an extra phase per Cycle `TODO(decision)`, and bosses from different tiers can pair up from Cycle 2.
-- `TODO(decision)` Should the visual palette shift per Cycle (for example, the world tint rotates)?
+- bosses gain **+1 phase per Cycle, capped at +2** (the extra phases remix patterns from other bosses), and bosses from different tiers can pair up from Cycle 2.
+- **The world palette shifts per Cycle** (see ART_DIRECTION, Cycle tint). Enemy bullet colors and player colors never change.

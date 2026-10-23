@@ -4,6 +4,21 @@ Newest entries first. Written with the `devlog` skill at the end of every sessio
 
 ---
 
+## 2026-10-23: Phase 0 approved, decisions resolved, README
+**Built**
+- Resolved all 24 `TODO(decision)` items across the GDD, FACTIONS, UPGRADES, ART_DIRECTION, AUDIO, CUTSCENE and PERFORMANCE docs (summary table in ADR-012).
+- Added a styled `README.md` with an SVG banner (`docs/assets/banner.svg`).
+- Added the `origin` remote (github.com/Le-Jr/axiom-god-mode) and pushed `main`.
+
+**Decisions:** ADR-012 (design decisions), ADR-013 (GitHub remote).
+
+**TODO(decision):** resolved: all 24. New: none.
+
+**Next**
+- Fix pnpm via corepack (ADR-011), then Phase 1 (scaffold).
+
+---
+
 ## 2026-10-23: Phase 0, knowledge base
 **Built**
 - CLAUDE.md and the full docs set: GDD, ARCHITECTURE, FACTIONS, UPGRADES, ART_DIRECTION, AUDIO, CUTSCENE, PERFORMANCE, ROADMAP, DECISIONS, DEVLOG.
