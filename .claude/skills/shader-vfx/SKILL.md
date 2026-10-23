@@ -8,7 +8,7 @@ description: Use when writing or changing shaders, materials or visual effects i
 Visual rules (palette, readability, effect stages) are in `docs/ART_DIRECTION.md`. Read it first.
 
 ## Conventions
-- Location: `src/game/rendering/shaders/<name>/` containing `<name>.vert.glsl`, `<name>.frag.glsl` (imported as strings; Phase 1 configures a raw loader), and `<name>Material.ts` exporting a factory.
+- Location: `src/game/rendering/shaders/<name>/` containing `<name>.glsl.ts` (exports `vert`/`frag` as `/* glsl */` template strings; no raw-file loader under Turbopack) and `<name>Material.ts` exporting a factory.
 - Uniform names: `uTime` (seconds, sim time), `uIntensity` (0..1+), `uColor` (linear `Color`), `uHdr` (emissive multiplier), `uProgress` (0..1 for timed effects), `uResolution`. Prefix varyings with `v` and attributes with `a`.
 - **HDR for bloom:** only things that should glow exceed 1.0. Multiply the color by `uHdr` (player core 6, beam core 5, bullets 3, telegraphs 1.5, world ≤ 1). Set `toneMapped: false` on emissive materials, and let the post chain tone-map.
 - Per-instance variation uses `InstancedBufferAttribute` (`aProgress`, `aSeed`, `aTint`). Never use one material per instance.

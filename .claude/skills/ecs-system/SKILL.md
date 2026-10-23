@@ -22,6 +22,8 @@ Background: `docs/ARCHITECTURE.md` §3–§6. The ECS is a minimal sparse-set EC
 7. If the system subscribes to events, unsubscribe in `dispose`.
 
 ## Rules
+- Create queries once in `init` (`world.query(A, B)`), then iterate each tick with `const n = q.collect(); for (let i = 0; i < n; i++) q.results[i]`. Never call `world.query` in `update`.
+- Tests use `createTestContext(configPatch?, { seed, cycle })` from `@/game/core/testing/createTestContext`. `ctx.recordEvents()` captures emitted events.
 - `update` is allocation-free: use preallocated scratch objects and reuse event payloads (`_payload.amount = x; bus.emit('player:damaged', _payload)`).
 - Listeners must not store a payload reference; copy primitives instead.
 - Use `ctx.rng`, never `Math.random()`. Use `dt` (the fixed step) times `ctx.time.timeScale`.

@@ -2,7 +2,7 @@
 
 An infinite 3D "god mode" bullet hell that runs in the browser. You play **The Unbound**, a researcher who was disintegrated in a quantum containment failure and came back as a luminous being. You erase everything the world sends at you, and the world keeps escalating forever: police → SWAT → army → armor → air → secret societies → aliens → heroes → the Demiurge → cosmic entities → a new Cycle with harder scaling.
 
-**Status:** Phase 0 (knowledge base) is approved, and all design decisions are recorded in ADR-012. No game code exists yet. See [docs/ROADMAP.md](docs/ROADMAP.md).
+**Status:** Phase 1 (scaffold) is done: menu, `/play`, fixed-timestep loop, ECS, stores, an empty scene with postprocessing, and the F3 overlay. Next is Phase 2 (player and powers). See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Stack
 - Next.js (App Router, latest) + TypeScript `strict` + Tailwind (HUD/UI only), **npm**
@@ -11,6 +11,7 @@ An infinite 3D "god mode" bullet hell that runs in the browser. You play **The U
 - Our own `AudioManager` on the Web Audio API
 - Custom sphere/ray collision on a spatial hash grid. No physics engine for combat.
 - Vitest for unit tests of pure simulation code
+- **Next 16 has breaking changes** from older versions. Read `node_modules/next/dist/docs/` before using a Next API (see `AGENTS.md`). `cacheComponents` stays off (ADR-015).
 
 ## Commands
 ```bash
@@ -19,16 +20,18 @@ npm run dev          # dev server, http://localhost:3000
 npm run build        # production build; must pass with zero TS/ESLint errors
 npm run lint
 npm run typecheck    # tsc --noEmit
-npm run test         # vitest run
+npm run test         # vitest run (npm run test:watch for watch mode)
 ```
-(Phase 1 creates these scripts.)
+Debug URL params on `/play`: `?seed=N` pins the run seed. In game, F3 toggles the debug overlay and Esc pauses.
 
 ## Folder map
 ```
 src/
-  app/            # routes: / (menu), /play
+  app/            # routes: / (menu), /play (PlayClient → dynamic GameCanvas)
   game/
-    core/         # GameLoop (fixed timestep), Time, EventBus, events.ts, Rng
+    GameCanvas.tsx # R3F <Canvas>, run lifecycle; add scene content here
+    core/         # GameLoop, runtime (live run), GameContext, Time, EventBus, events.ts, Rng,
+                  # hudBridge/debugBridge, testing/createTestContext
     ecs/          # World, component stores, System interface
     systems/      # movement, collision, damage, spawning, aura, beam, projectiles, destruction
       patterns/   # bullet emitter implementations (spread, ring, spiral, ...)

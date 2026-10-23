@@ -106,3 +106,30 @@ Format: `ADR-NNN — Title` · date · status (Accepted / Superseded by ADR-x / 
 - **Context:** pnpm was never a hard requirement. Corepack failed to install it on the dev machine (ADR-011), and the project gains nothing from pnpm's disk and speed benefits at this size.
 - **Decision:** Use **npm** (bundled with Node 22; npm 10.9 on the dev machine). Commit `package-lock.json`, use `npm ci` in CI, and use `npx` for one-off tools. Pin `"engines": { "node": ">=22" }` in `package.json`.
 - **Consequences:** Zero extra setup for contributors. Commands are `npm run <script>`. Docs, skills and `.claude/settings.json` permissions were updated accordingly.
+
+### ADR-015: Next.js 16 `cacheComponents` disabled
+2026-10-23 · Accepted
+- **Context:** `create-next-app` (Next 16.4) enables `cacheComponents` and `partialPrefetching`. With `cacheComponents`, Next keeps previously visited routes alive inside React `<Activity mode="hidden">` instead of unmounting them.
+- **Decision:** Keep it off. The app has no server data to cache, and a hidden-but-mounted `/play` would keep a WebGL context and the game route alive after quitting to the menu.
+- **Consequences:** Plain App Router semantics: leaving `/play` unmounts the canvas, and `endRun()` disposes the run. Revisit only if server-side features appear (leaderboard).
+
+### ADR-016: Run lifecycle through a `runtime` singleton; queries are prebuilt objects
+2026-10-23 · Accepted
+- **Decision:** `core/runtime.ts` holds `{ ctx, loop }` for the single live run (`startRun`/`endRun`, called from `GameCanvas`'s effect, StrictMode-safe). Render components read `runtime.ctx` inside `useFrame` and null-check it. ECS queries are `Query` objects created once (`world.query(A, B)`) and filled each tick with `collect()` into a preallocated `Int32Array`, instead of generators (which allocate an iterator per call).
+- **Consequences:** No React context plumbing for per-frame reads, and no per-tick allocation in queries. Only one run can exist at a time, which is by design.
+
+### ADR-017: Draw-call accounting across postprocessing passes
+2026-10-23 · Accepted
+- **Decision:** `gl.info.autoReset = false` (set in `onCreated`). `DebugProbe` resets at useFrame priority −1000 and reads at +10, after the EffectComposer's render at +1, so F3 shows totals for the whole multi-pass frame.
+- **Consequences:** Any code that calls `gl.render` outside this window is counted in the next frame. No other component may use a positive priority besides the composer (1) and the probe (10).
+
+### ADR-018: GLSL as TypeScript template strings
+2026-10-23 · Accepted
+- **Decision:** Shaders live in `<name>.glsl.ts` modules exporting `/* glsl */` strings, instead of `.glsl` files that need a raw loader under Turbopack.
+- **Consequences:** Zero bundler config. Editor GLSL highlighting comes from the `/* glsl */` tag. The `shader-vfx` skill is updated.
+
+### ADR-019: Tooling versions
+2026-10-23 · Accepted
+- **Decision:** Next 16.4.3 (Turbopack), React 19.3, three 0.186, R3F 9.8, drei 10.7, @react-three/postprocessing 3.2 + postprocessing 6.39, zustand 5, Tailwind 4 (via `@tailwindcss/turbopack`), TypeScript 5.9 (not 7.x; Next's type-check pipeline uses the TS JS API), ESLint 9 (`eslint-config-next` flat config), Vitest 5 with native `resolve.tsconfigPaths`.
+- **Consequences:** R3F 9.8 peer-limits React to `<19.4`, so upgrade React only together with R3F. R3F still uses the deprecated `THREE.Clock`, which logs a console warning that is harmless and not ours.
+

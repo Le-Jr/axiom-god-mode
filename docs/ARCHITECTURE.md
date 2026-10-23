@@ -28,7 +28,8 @@ while (accumulator >= STEP && substeps < MAX_SUBSTEPS) {
 }
 alpha = accumulator / STEP                      // render interpolation factor
 ```
-- **Pause** (menu, level-up, tab hidden) stops sim ticks. Rendering and the UI continue.
+- **Pause** stops sim ticks while rendering and the UI continue. Pause reasons form a bitmask (`ui`, `levelUp`, `hidden`), and the sim resumes only when all are cleared. `GameCanvas` maps store phase changes to `ui` and `visibilitychange` to `hidden`. The accumulator resets on resume, so there is no catch-up burst.
+- **Run lifecycle:** `core/runtime.ts` holds the single live run (`runtime.ctx`, `runtime.loop`). `startRun(seed?)` and `endRun()` are called from `GameCanvas`'s mount effect. Render components read `runtime.ctx` inside `useFrame`. A `?seed=N` URL param pins the seed.
 - `Time` exposes `tick`, `simTime`, `alpha`, `timeScale` (time dilation buff and hit-stop).
 - `Rng` is a seeded PRNG (mulberry32) per run, for reproducible bugs. Never call `Math.random()` in the sim.
 
@@ -46,9 +47,10 @@ alpha = accumulator / STEP                      // render interpolation factor
 
 ## 4. ECS (`game/ecs/`)
 Minimal and allocation-free:
-- An `Entity` is a number (index plus generation, to catch stale handles).
-- A `ComponentStore<T>` is a sparse set (dense array of `T` plus an entity index map). Component objects are allocated once at spawn from a pool and reset on despawn.
-- `World` provides `create()`, `destroy(e)` (deferred to `cleanup`), `add(e, store, init)`, `get(e, store)`, `has()`, and `query(storeA, storeB)`, which iterates the smallest store without allocating.
+- An `Entity` is a number: index (low 20 bits) plus generation (11 bits), to catch stale handles (`world.isAlive(e)`).
+- Components are declared with `defineComponent<T>(name, create, reset)` in `ecs/components/`. A `ComponentStore<T>` is a sparse set whose dense `entities` and `data` arrays are packed. Swap-remove parks the removed data object past `size`, where the next `add` reuses it after `reset`, so steady-state spawning does not allocate.
+- `World` provides `create()`, `destroy(e)` (deferred until `flush()`, which the `cleanup` system runs), `add(e, Def, init?)` (returns the component; hot paths mutate it rather than pass `init`), `get`, `tryGet` (on the store), `has`, `remove`, and `store(Def)`.
+- **Queries:** `const q = world.query(A, B)` is created **once** in `init`. Each tick: `const n = q.collect(); for (let i = 0; i < n; i++) { const e = q.results[i]; ... }`. It iterates the smallest store and writes into a preallocated `Int32Array`, with no allocation.
 - `System` interface:
 ```ts
 export interface System {
@@ -113,7 +115,9 @@ Rule: components may call `useGameStore(selector)` only for the low-frequency fi
 - Enemies with unique animation (bosses) are ordinary meshes, few in number.
 - Postprocessing (`@react-three/postprocessing`): Bloom (mipmap, luminance threshold), ChromaticAberration (driven by hits), Vignette, Noise/Glitch (low HP), ToneMapping (ACES). Quality presets live in `config/rendering.ts`.
 - Dissolve, aura and beam are custom `ShaderMaterial`s (see [ART_DIRECTION.md](ART_DIRECTION.md) and the `shader-vfx` skill).
-- `frameloop="always"`, `dpr={[1, quality.maxDpr]}`, `gl={{ antialias: false, powerPreference: 'high-performance' }}`. AA comes from postprocessing (SMAA) when quality allows.
+- `frameloop="always"`, `flat` (the renderer does no tone mapping; the `ToneMapping` effect does), `dpr={[1, quality.maxDpr]}`, `gl={{ antialias: false, powerPreference: 'high-performance', stencil: false }}`. AA comes from postprocessing (SMAA) when quality allows.
+- **useFrame priorities:** `-1000` DebugProbe resets `gl.info` → `-100` LoopDriver ticks the sim → `0` render pools copy state → `1` EffectComposer renders (any positive priority disables R3F auto-render, which the composer owns) → `10` DebugProbe reads draw calls for the whole multi-pass frame (`gl.info.autoReset = false` is set in `onCreated`).
+- GLSL lives in TypeScript modules as template strings (`/* glsl */` tag). No raw-file loader is needed under Turbopack.
 
 ## 9. Data flow
 ```mermaid
@@ -144,7 +148,9 @@ flowchart LR
 
 ## 10. Routing and boot
 - `/` is the menu (React only, no canvas). It includes a "Play" button, settings, and the option to replay the intro.
-- `/play` is a client page that `dynamic(() => import('@/game/GameCanvas'), { ssr: false })`. Flow: cutscene (first run, or when chosen) → `run:start`.
+- `/play` is a server page rendering `PlayClient` (a Client Component), which does `dynamic(() => import('@/game/GameCanvas'), { ssr: false })`. In Next 16, `ssr: false` is only allowed in Client Components. Flow: cutscene (first run, or when chosen) → `run:start`.
+- `cacheComponents` is **off** (ADR-015). With it on, Next keeps left routes alive inside `<Activity>`, which would keep the WebGL route mounted.
+- Next 16 has breaking changes from older versions. Before using a Next API, read `node_modules/next/dist/docs/` (see `AGENTS.md`).
 - Audio unlocks on the first user gesture (the menu click), because browsers require one before the AudioContext can start.
 
 ## 11. Testing

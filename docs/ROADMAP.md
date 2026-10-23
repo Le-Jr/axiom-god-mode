@@ -9,16 +9,16 @@
 - [x] Styled README and push to GitHub
 
 ## Phase 1: Scaffold
-- [ ] Next.js (App Router) + TS strict + Tailwind + ESLint, with npm (`package-lock.json` committed)
-- [ ] R3F, drei, postprocessing, zustand, vitest installed
-- [ ] Folder structure per CLAUDE.md; exclude `.claude/` (skill templates) from tsconfig and ESLint
-- [ ] `core/`: GameLoop (fixed timestep, interpolation, pause), Time, EventBus + `events.ts`, Rng
-- [ ] `ecs/`: World, ComponentStore, System interface + unit tests
-- [ ] zustand stores: `useGameStore`, `useSettingsStore` (persist with try/catch)
-- [ ] Routes: `/` menu → `/play` (client-only canvas via `dynamic(..., { ssr: false })`)
-- [ ] Empty scene: ground plane, fog, camera rig, postprocessing chain
-- [ ] F3 debug overlay (FPS, frame/sim ms, entity counts, draw calls)
-- [ ] `npm run build` / `lint` / `typecheck` / `test` green; commit
+- [x] Next.js (App Router) + TS strict + Tailwind + ESLint, with npm (`package-lock.json` committed)
+- [x] R3F, drei, postprocessing, zustand, vitest installed
+- [x] Folder structure per CLAUDE.md; exclude `.claude/` (skill templates) from tsconfig and ESLint
+- [x] `core/`: GameLoop (fixed timestep, interpolation, pause), Time, EventBus + `events.ts`, Rng
+- [x] `ecs/`: World, ComponentStore, System interface + unit tests
+- [x] zustand stores: `useGameStore`, `useSettingsStore` (persist with try/catch)
+- [x] Routes: `/` menu → `/play` (client-only canvas via `dynamic(..., { ssr: false })`)
+- [x] Empty scene: ground plane, fog, camera rig, postprocessing chain
+- [x] F3 debug overlay (FPS, frame/sim ms, entity counts, draw calls)
+- [x] `npm run build` / `lint` / `typecheck` / `test` green; commit
 
 ## Phase 2: Player and powers
 - [ ] The Unbound body shader (placeholder)

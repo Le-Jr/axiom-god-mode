@@ -9,7 +9,7 @@ You are the Unbound. The world will not stop sending things to stop you.
 
 <br/>
 
-![Status](https://img.shields.io/badge/status-phase%200%20%C2%B7%20design-9B6BFF?style=flat-square)
+![Status](https://img.shields.io/badge/status-phase%201%20%C2%B7%20scaffold-9B6BFF?style=flat-square)
 ![Next.js](https://img.shields.io/badge/Next.js-App%20Router-05070D?style=flat-square&logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![three.js](https://img.shields.io/badge/three.js-R3F-05070D?style=flat-square&logo=threedotjs&logoColor=5CF2FF)
@@ -83,7 +83,7 @@ flowchart LR
 ## Getting started
 
 > [!NOTE]
-> The repository is in **Phase 0** (design and knowledge base). The game code arrives in Phase 1.
+> **Phase 1** is in: menu, the `/play` scene with bloom, the fixed-timestep loop and the F3 debug overlay. Gameplay arrives in Phases 2–3.
 
 ```bash
 npm install
@@ -122,7 +122,7 @@ docs/         design and engineering knowledge base
 ## Roadmap
 
 - [x] **Phase 0**: design docs, architecture, project skills
-- [ ] **Phase 1**: scaffold, fixed-timestep loop, stores, empty scene, F3 overlay
+- [x] **Phase 1**: scaffold, fixed-timestep loop, stores, empty scene, F3 overlay
 - [ ] **Phase 2**: the Unbound, movement, aura, Erasure Beam, HUD
 - [ ] **Phase 3**: bullets, collisions, police and SWAT, XP and buffs, game over
 - [ ] Then: every faction and boss, Cycles, destructible city, adaptive music, intro cutscene
