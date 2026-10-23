@@ -27,7 +27,7 @@ All tunables live in `src/game/config/`. Faction and upgrade numbers live in the
 4. Sanity-check with numbers: compute time-to-kill for the reference unit at levels 1, 10 and 30, and Cycle 0 and 2 (beam DPS vs. HP × hpMult). Note the results.
 5. Check that the performance caps are still respected (density never exceeds soft caps).
 6. Log the change in the **Balance log** section of `docs/DEVLOG.md` for the session: `value: old → new (reason)`.
-7. Run `pnpm test`. Formula tests in `config/__tests__` must be updated deliberately, not just to make them pass.
+7. Run `npm run test`. Formula tests in `config/__tests__` must be updated deliberately, not just to make them pass.
 
 ## Rules
 - Use one multiplier per concern. Don't stack hidden multipliers across files.

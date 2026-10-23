@@ -13,7 +13,7 @@ You are the Unbound. The world will not stop sending things to stop you.
 ![Next.js](https://img.shields.io/badge/Next.js-App%20Router-05070D?style=flat-square&logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![three.js](https://img.shields.io/badge/three.js-R3F-05070D?style=flat-square&logo=threedotjs&logoColor=5CF2FF)
-![pnpm](https://img.shields.io/badge/pnpm-F69220?style=flat-square&logo=pnpm&logoColor=white)
+![npm](https://img.shields.io/badge/npm-CB3837?style=flat-square&logo=npm&logoColor=white)
 ![Target](https://img.shields.io/badge/target-60%20FPS%20%C2%B7%202000%2B%20bullets-5CF2FF?style=flat-square)
 
 [Design](docs/GDD.md) · [Architecture](docs/ARCHITECTURE.md) · [Factions](docs/FACTIONS.md) · [Upgrades](docs/UPGRADES.md) · [Roadmap](docs/ROADMAP.md)
@@ -86,10 +86,10 @@ flowchart LR
 > The repository is in **Phase 0** (design and knowledge base). The game code arrives in Phase 1.
 
 ```bash
-pnpm install
-pnpm dev        # http://localhost:3000
-pnpm build      # zero TS/ESLint errors required
-pnpm test
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # zero TS/ESLint errors required
+npm run test
 ```
 
 ## Project map

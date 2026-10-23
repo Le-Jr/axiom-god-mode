@@ -34,5 +34,5 @@ Background: `docs/ARCHITECTURE.md` §3–§6. The ECS is a minimal sparse-set EC
 - [ ] New events are added to `events.ts` and ARCHITECTURE §6
 - [ ] There are no allocations in `update`
 - [ ] `dispose` unsubscribes listeners
-- [ ] There is a unit test and `pnpm test` passes
+- [ ] There is a unit test and `npm run test` passes
 - [ ] Docs are updated if behavior is player-visible (GDD)

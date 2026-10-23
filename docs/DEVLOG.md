@@ -4,6 +4,19 @@ Newest entries first. Written with the `devlog` skill at the end of every sessio
 
 ---
 
+## 2026-10-23: Switch to npm
+**Built**
+- Replaced pnpm with npm in CLAUDE.md, README, ROADMAP, the skills and `.claude/settings.json`.
+
+**Decisions:** ADR-014 (npm replaces pnpm; ADR-011 superseded).
+
+**Issues:** the corepack/pnpm problem is no longer blocking.
+
+**Next**
+- Phase 1 (scaffold) with npm.
+
+---
+
 ## 2026-10-23: Phase 0 approved, decisions resolved, README
 **Built**
 - Resolved all 24 `TODO(decision)` items across the GDD, FACTIONS, UPGRADES, ART_DIRECTION, AUDIO, CUTSCENE and PERFORMANCE docs (summary table in ADR-012).
@@ -15,7 +28,7 @@ Newest entries first. Written with the `devlog` skill at the end of every sessio
 **TODO(decision):** resolved: all 24. New: none.
 
 **Next**
-- Fix pnpm via corepack (ADR-011), then Phase 1 (scaffold).
+- Phase 1 (scaffold).
 
 ---
 

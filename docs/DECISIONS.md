@@ -61,7 +61,7 @@ Format: `ADR-NNN — Title` · date · status (Accepted / Superseded by ADR-x / 
 - **Skipped:** `algorithmic-art`, `canvas-design`, `theme-factory`, `web-artifacts-builder` (aimed at standalone artifacts, not a Next.js game), `docx/pdf/pptx/xlsx`, `brand-guidelines` (Anthropic's brand), `internal-comms`, `slack-gif-creator`, `mcp-builder`, `claude-api`, `doc-coauthoring`, `skill-creator` (useful but available globally as a plugin skill; not needed in-repo). Marketplace plugins: `typescript-lsp` and `playwright` look useful but are user-level plugins, so they were left for the user to opt into rather than auto-installed. This was confirmed in ADR-012: the repo stays self-contained, and contributors may install those plugins individually.
 
 ### ADR-011: Package manager is pnpm
-2026-10-23 · Accepted
+2026-10-23 · Superseded by ADR-014
 - **Note:** On this machine, corepack failed to fetch pnpm 12.15.0 (`Cannot find module .../pnpm.cjs`). Phase 1 must fix this first (e.g. `corepack enable && corepack prepare pnpm@latest --activate`, or `npm i -g pnpm`) and pin `packageManager` in `package.json`.
 
 ### ADR-012: Resolution of the Phase 0 open design questions
@@ -100,3 +100,9 @@ Format: `ADR-NNN — Title` · date · status (Accepted / Superseded by ADR-x / 
 ### ADR-013: GitHub remote
 2026-10-23 · Accepted
 - **Decision:** The canonical repository is `https://github.com/Le-Jr/axiom-god-mode` (remote `origin`, branch `main`).
+
+### ADR-014: Package manager is npm (replaces pnpm)
+2026-10-23 · Accepted
+- **Context:** pnpm was never a hard requirement. Corepack failed to install it on the dev machine (ADR-011), and the project gains nothing from pnpm's disk and speed benefits at this size.
+- **Decision:** Use **npm** (bundled with Node 22; npm 10.9 on the dev machine). Commit `package-lock.json`, use `npm ci` in CI, and use `npx` for one-off tools. Pin `"engines": { "node": ">=22" }` in `package.json`.
+- **Consequences:** Zero extra setup for contributors. Commands are `npm run <script>`. Docs, skills and `.claude/settings.json` permissions were updated accordingly.

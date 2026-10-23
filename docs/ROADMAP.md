@@ -9,7 +9,7 @@
 - [x] Styled README and push to GitHub
 
 ## Phase 1: Scaffold
-- [ ] Next.js (App Router) + TS strict + Tailwind + ESLint, with pnpm
+- [ ] Next.js (App Router) + TS strict + Tailwind + ESLint, with npm (`package-lock.json` committed)
 - [ ] R3F, drei, postprocessing, zustand, vitest installed
 - [ ] Folder structure per CLAUDE.md; exclude `.claude/` (skill templates) from tsconfig and ESLint
 - [ ] `core/`: GameLoop (fixed timestep, interpolation, pause), Time, EventBus + `events.ts`, Rng
@@ -18,7 +18,7 @@
 - [ ] Routes: `/` menu → `/play` (client-only canvas via `dynamic(..., { ssr: false })`)
 - [ ] Empty scene: ground plane, fog, camera rig, postprocessing chain
 - [ ] F3 debug overlay (FPS, frame/sim ms, entity counts, draw calls)
-- [ ] `pnpm build` / `lint` / `typecheck` / `test` green; commit
+- [ ] `npm run build` / `lint` / `typecheck` / `test` green; commit
 
 ## Phase 2: Player and powers
 - [ ] The Unbound body shader (placeholder)

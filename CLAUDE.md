@@ -5,7 +5,7 @@ An infinite 3D "god mode" bullet hell that runs in the browser. You play **The U
 **Status:** Phase 0 (knowledge base) is approved, and all design decisions are recorded in ADR-012. No game code exists yet. See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Stack
-- Next.js (App Router, latest) + TypeScript `strict` + Tailwind (HUD/UI only), **pnpm**
+- Next.js (App Router, latest) + TypeScript `strict` + Tailwind (HUD/UI only), **npm**
 - three.js through `@react-three/fiber`, `@react-three/drei`, `@react-three/postprocessing`
 - zustand for **low-frequency** game/meta state only
 - Our own `AudioManager` on the Web Audio API
@@ -14,12 +14,12 @@ An infinite 3D "god mode" bullet hell that runs in the browser. You play **The U
 
 ## Commands
 ```bash
-pnpm install
-pnpm dev          # dev server, http://localhost:3000
-pnpm build        # production build; must pass with zero TS/ESLint errors
-pnpm lint
-pnpm typecheck    # tsc --noEmit
-pnpm test         # vitest run
+npm install
+npm run dev          # dev server, http://localhost:3000
+npm run build        # production build; must pass with zero TS/ESLint errors
+npm run lint
+npm run typecheck    # tsc --noEmit
+npm run test         # vitest run
 ```
 (Phase 1 creates these scripts.)
 
@@ -57,8 +57,8 @@ public/assets/{audio,textures,models,cutscene}
 9. Unresolved design questions are marked `TODO(decision)`. Do not invent answers.
 
 ## Definition of done
-- `pnpm typecheck`, `pnpm lint`, `pnpm build` and `pnpm test` all pass with zero errors.
-- The feature runs in `pnpm dev`. The F3 overlay shows no FPS regression against the [PERFORMANCE.md](docs/PERFORMANCE.md) budgets.
+- `npm run typecheck`, `npm run lint`, `npm run build` and `npm run test` all pass with zero errors.
+- The feature runs in `npm run dev`. The F3 overlay shows no FPS regression against the [PERFORMANCE.md](docs/PERFORMANCE.md) budgets.
 - No new per-frame allocations or React re-renders. Check with the React Profiler and the Memory panel when touching hot paths.
 - The relevant docs are updated in the same commit (GDD, FACTIONS, UPGRADES, AUDIO, ...).
 - The `devlog` skill has run: DEVLOG, ROADMAP checkboxes and DECISIONS are updated.
